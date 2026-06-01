@@ -90,7 +90,27 @@ enum GamePhase { ROAD, PHONE, GAME_OVER, PAUSED }
 2. WillpowerBar zaczyna odliczać od `current_willpower_time` → 0
 3. Gdy bar = 0 → `GameState.set_phase(PHONE)`
 4. Gracz może zdismissować powiadomienie → `GameState.set_phase(ROAD)`
-5. `current_willpower_time` maleje z każdą strefą (5s → 4.2s → 3.4s → 2.6s)
+5. `current_willpower_time` i `interval` to **tuningowalne krzywe**, nie hardkodowane wartości
+
+## Maszyna stanów
+
+```
+ROAD ─── notification_timeout ──→ PHONE_INTERRUPT
+         (willpower bar = 0)         │
+                                    ├─ dismissed → ROAD
+                                    └─ hazard_hit → GAME_OVER
+ROAD ─── hazard_hit ──────────→ GAME_OVER
+```
+
+Interrupt = kolejka-o-długości-1. **Nie hardkodować "jest dokładnie jeden telefon".**
+
+## Metryki sesji
+
+Dwie metryki trzymane w GameState przez całą sesję:
+- `distance: float` — dystans w metrach
+- `time_on_phone: float` — łączny czas w sekundach gdy phase == PHONE_INTERRUPT
+
+Na ekranie Game Over: dystans + procent czasu w telefonie.
 
 ## Kolizje (warstwy)
 

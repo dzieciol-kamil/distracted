@@ -1,0 +1,58 @@
+[
+  {
+    "id": "mom_photos",
+    "app": "SMS",
+    "sender": "Mama",
+    "text": "Wysłałam ci 47 zdjęć, widziałeś?",
+    "action": "dismiss"
+  },
+  {
+    "id": "instagram_like",
+    "app": "Instagram",
+    "sender": "Instagram",
+    "text": "kowalski_jan polubił Twoje zdjęcie z 2019 roku",
+    "action": "dismiss"
+  },
+  {
+    "id": "car_warranty",
+    "app": "Połączenie przychodzące",
+    "sender": "+48 800 100 200",
+    "text": "Twoja gwarancja samochodu wygasła. Wciśnij 1 żeby przedłużyć.",
+    "action": "decline"
+  },
+  {
+    "id": "food_delivery",
+    "app": "Pyszne.pl",
+    "sender": "Dostawca",
+    "text": "Twoje zamówienie jest 3 przystanki od Ciebie!",
+    "action": "dismiss"
+  },
+  {
+    "id": "whatsapp_group",
+    "app": "WhatsApp",
+    "sender": "Familia 2k25",
+    "text": "128 nieprzeczytanych wiadomości",
+    "action": "dismiss"
+  },
+  {
+    "id": "system_update",
+    "app": "System",
+    "sender": "Aktualizacja systemu",
+    "text": "Dostępna aktualizacja iOS 18.3.2. To już 6. przypomnienie.",
+    "action": "dismiss"
+  },
+  {
+    "id": "tinder_match",
+    "app": "Tinder",
+    "sender": "Tinder",
+    "text": "Masz nowego dopasowania! Napisz teraz, zanim ona straci zainteresowanie.",
+    "action": "dismiss"
+  },
+  {
+    "id": "battery_low",
+    "app": "System",
+    "sender": "Bateria",
+    "text": "Bateria: 20%. Podłącz ładowarkę.",
+    "action": "dismiss"
+  }
+]

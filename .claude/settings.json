@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__pixellab__list_projects",
+      "mcp__pixellab__list_characters",
+      "mcp__pixellab__list_objects",
+      "mcp__pixellab__list_isometric_tiles",
+      "mcp__pixellab__list_topdown_tilesets",
+      "mcp__pixellab__list_sidescroller_tilesets",
+      "mcp__pixellab__list_tiles_pro",
+      "mcp__pixellab__get_balance",
+      "mcp__pixellab__get_object",
+      "mcp__pixellab__get_character",
+      "mcp__pixellab__get_isometric_tile",
+      "mcp__pixellab__get_map_object",
+      "mcp__pixellab__get_sidescroller_tileset",
+      "mcp__pixellab__get_topdown_tileset",
+      "mcp__pixellab__get_tiles_pro",
+      "mcp__pixellab__agent_feedback",
+      "mcp__pixellab__select_object_frames",
+      "mcp__pixellab__dismiss_review"
+    ]
+  }
+}

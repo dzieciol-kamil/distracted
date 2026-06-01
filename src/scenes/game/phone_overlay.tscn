@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/phone_overlay.gd" id="1_phone"]
+
+[node name="PhoneOverlay" type="CanvasLayer"]
+script = ExtResource("1_phone")
+
+[node name="PhonePanel" type="Panel" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.82
+offset_top = -900.0
+offset_bottom = -900.0
+
+[node name="AppBar" type="HBoxContainer" parent="PhonePanel"]
+layout_mode = 1
+anchor_right = 1.0
+offset_bottom = 50.0
+
+[node name="AppIcon" type="TextureRect" parent="PhonePanel/AppBar"]
+layout_mode = 2
+custom_minimum_size = Vector2(40, 40)
+
+[node name="AppName" type="Label" parent="PhonePanel/AppBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SMS"
+
+[node name="NotificationText" type="Label" parent="PhonePanel"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 60.0
+offset_left = 16.0
+offset_right = -16.0
+text = ""
+autowrap_mode = 3
+
+[node name="DismissButton" type="Button" parent="PhonePanel"]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -60.0
+text = "Dismiss"

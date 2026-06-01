@@ -1,1 +1,16 @@
+# Godot
+src/.godot/
+src/android/
+src/ios/
+*.import
+*.uid
+
+# Environment
+.env
+
+# macOS
 .DS_Store
+
+# Logs
+*.log
+/tmp/

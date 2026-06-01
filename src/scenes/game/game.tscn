@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/game/game.gd" id="1_game"]
+[ext_resource type="Script" path="res://scripts/game/game_camera.gd" id="2_cam"]
+[ext_resource type="PackedScene" path="res://scenes/game/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/game/phone_overlay.tscn" id="4_phone"]
+[ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="5_player"]
+[ext_resource type="PackedScene" path="res://scenes/game/chunk_manager.tscn" id="6_chunks"]
+
+[node name="Game" type="Node3D"]
+script = ExtResource("1_game")
+
+[node name="WorldContainer" type="Node3D" parent="."]
+
+[node name="ChunkManager" parent="WorldContainer" instance=ExtResource("6_chunks")]
+
+[node name="HazardContainer" type="Node3D" parent="WorldContainer"]
+
+[node name="Player" parent="." instance=ExtResource("5_player")]
+
+[node name="GameCamera" type="Camera3D" parent="."]
+script = ExtResource("2_cam")
+position = Vector3(0, 4, 8)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 10, 0)
+shadow_enabled = true
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="PhoneOverlay" parent="." instance=ExtResource("4_phone")]
+layer = 10

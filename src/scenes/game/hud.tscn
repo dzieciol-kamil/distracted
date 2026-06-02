@@ -5,31 +5,42 @@
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
 
-[node name="TopBar" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 0.0
-offset_bottom = 60.0
+[node name="DistanceLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 200.0
+offset_bottom = 48.0
+text = "0 m"
+theme_override_font_sizes/font_size = 24
 
-[node name="ScoreLabel" type="Label" parent="TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "0m"
-
-[node name="ZoneLabel" type="Label" parent="TopBar"]
-layout_mode = 2
-text = "Village"
-
-[node name="WillpowerBar" type="ProgressBar" parent="."]
-layout_mode = 1
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -60.0
-offset_bottom = -20.0
-value = 100.0
+[node name="NotificationArea" type="Control" parent="."]
 visible = false
+offset_left = 16.0
+offset_top = 64.0
+offset_right = 374.0
+offset_bottom = 112.0
+
+[node name="NotificationIcon" type="Button" parent="NotificationArea"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 48.0
+offset_bottom = 48.0
+text = "!"
+
+[node name="WillpowerBar" type="ProgressBar" parent="NotificationArea"]
+offset_left = 56.0
+offset_top = 8.0
+offset_right = 358.0
+offset_bottom = 40.0
+min_value = 0.0
+max_value = 3.0
+value = 3.0
+show_percentage = false
+
+[node name="StopButton" type="Button" parent="."]
+offset_left = 95.0
+offset_top = 740.0
+offset_right = 295.0
+offset_bottom = 820.0
+text = "STOP"
+theme_override_font_sizes/font_size = 32

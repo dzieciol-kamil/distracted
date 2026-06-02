@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Notification" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/notification.gd" id="1_notification"]
+
+[resource]
+script = ExtResource("1_notification")
+content_id = "mama_zjadles"
+sender = "Mama"
+text = "zjadłeś coś?"
+interaction = 0
+dismiss_action = 0

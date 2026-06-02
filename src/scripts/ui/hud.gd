@@ -1,32 +1,46 @@
 extends CanvasLayer
 
-@onready var score_label: Label = $TopBar/ScoreLabel
-@onready var zone_label: Label = $TopBar/ZoneLabel
-@onready var willpower_bar: ProgressBar = $WillpowerBar
+signal stop_hold_started
+signal stop_hold_released
 
-const ZONE_NAMES: Array[String] = ["Village", "Suburb", "Town", "City"]
+@onready var _distance_label: Label = $DistanceLabel
+@onready var _notification_area: Control = $NotificationArea
+@onready var _notification_icon: Button = $NotificationArea/NotificationIcon
+@onready var _willpower_bar: ProgressBar = $NotificationArea/WillpowerBar
+@onready var _stop_button: Button = $StopButton
 
 func _ready() -> void:
 	GameState.score_changed.connect(_on_score_changed)
-	GameState.zone_changed.connect(_on_zone_changed)
 	NotificationManager.notification_arrived.connect(_on_notification_arrived)
-	NotificationManager.notification_dismissed.connect(_on_notification_dismissed)
+	NotificationManager.phone_dismissed.connect(_on_phone_dismissed)
+	NotificationManager.phone_opened.connect(_on_phone_opened)
+	_notification_icon.pressed.connect(_on_notification_icon_pressed)
+	_stop_button.button_down.connect(_on_stop_button_down)
+	_stop_button.button_up.connect(_on_stop_button_up)
+	_willpower_bar.max_value = NotificationManager.WILLPOWER_MAX_MVP
 
 func _process(_delta: float) -> void:
-	if willpower_bar.visible and GameState.phase == GameState.GamePhase.ROAD:
-		var elapsed: float = NotificationManager.current_willpower_time - willpower_bar.value
-		willpower_bar.value = maxf(NotificationManager.current_willpower_time - elapsed, 0.0)
+	if NotificationManager.willpower_active:
+		_willpower_bar.value = NotificationManager.willpower_remaining
 
 func _on_score_changed(new_score: int) -> void:
-	score_label.text = "%dm" % new_score
+	_distance_label.text = "%d m" % new_score
 
-func _on_zone_changed(new_zone: GameState.Zone) -> void:
-	zone_label.text = ZONE_NAMES[new_zone]
+func _on_notification_arrived(_notification) -> void:
+	_willpower_bar.value = NotificationManager.WILLPOWER_MAX_MVP
+	_notification_area.visible = true
 
-func _on_notification_arrived(_id: String) -> void:
-	willpower_bar.max_value = NotificationManager.current_willpower_time
-	willpower_bar.value = NotificationManager.current_willpower_time
-	willpower_bar.visible = true
+func _on_phone_opened(_voluntary: bool) -> void:
+	_notification_area.visible = false
 
-func _on_notification_dismissed() -> void:
-	willpower_bar.visible = false
+func _on_phone_dismissed() -> void:
+	_notification_area.visible = false
+
+func _on_notification_icon_pressed() -> void:
+	NotificationManager.request_check_phone()
+
+func _on_stop_button_down() -> void:
+	stop_hold_started.emit()
+
+func _on_stop_button_up() -> void:
+	stop_hold_released.emit()

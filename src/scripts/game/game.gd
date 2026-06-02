@@ -4,6 +4,7 @@ extends Node3D
 @onready var _hazard_container: Node3D = $WorldContainer/HazardContainer
 @onready var _player: Node3D = $Player
 @onready var _stop_controller: Node = $StopController
+@onready var _hud: CanvasLayer = $HUD
 
 func _ready() -> void:
 	GameState.reset_metrics()
@@ -12,6 +13,10 @@ func _ready() -> void:
 	NotificationManager.start()
 	_stop_controller.bind_player(_player)
 	_player.collided_with_hazard.connect(_on_player_collided)
+	_hud.stop_requested.connect(_on_ui_stop_requested)
+
+func _on_ui_stop_requested() -> void:
+	_player.stop_pressed.emit()
 
 func _on_player_collided() -> void:
 	if GameState.phase == GameState.GamePhase.GAME_OVER:

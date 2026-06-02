@@ -36,3 +36,11 @@ min_value = 0.0
 max_value = 3.0
 value = 3.0
 show_percentage = false
+
+[node name="StopButton" type="Button" parent="."]
+offset_left = 95.0
+offset_top = 740.0
+offset_right = 295.0
+offset_bottom = 820.0
+text = "STOP"
+theme_override_font_sizes/font_size = 32

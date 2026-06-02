@@ -2,7 +2,6 @@ extends CharacterBody3D
 
 enum WalkState { WALKING, STOPPED }
 
-const GRAVITY: float = 9.8
 
 signal collided_with_hazard
 signal stop_pressed
@@ -21,7 +20,7 @@ func _physics_process(delta: float) -> void:
 	if walk_state == WalkState.WALKING:
 		GameState.add_distance(effective_speed * delta)
 
-	velocity.y -= GRAVITY * delta
+	velocity.y = 0.0
 	move_and_slide()
 
 func _input(event: InputEvent) -> void:

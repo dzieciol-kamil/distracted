@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/game/game.gd" id="1_game"]
 [ext_resource type="Script" path="res://scripts/game/game_camera.gd" id="2_cam"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/game/phone_overlay.tscn" id="4_phone"]
 [ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="5_player"]
 [ext_resource type="PackedScene" path="res://scenes/game/chunk_manager.tscn" id="6_chunks"]
+[ext_resource type="Script" path="res://scripts/game/stop_controller.gd" id="7_stopctrl"]
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_game")
@@ -30,3 +31,6 @@ shadow_enabled = true
 
 [node name="PhoneOverlay" parent="." instance=ExtResource("4_phone")]
 layer = 10
+
+[node name="StopController" type="Node" parent="."]
+script = ExtResource("7_stopctrl")

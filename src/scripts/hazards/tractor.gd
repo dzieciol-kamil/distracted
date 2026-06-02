@@ -2,7 +2,7 @@ extends Area3D
 
 signal cleared(node: Node3D)
 
-const LATERAL_SPEED: float = 4.0
+const LATERAL_SPEED: float = 1.5
 const PATH_HALF_WIDTH: float = 1.8
 
 var _direction: float = 1.0

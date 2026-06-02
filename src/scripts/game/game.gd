@@ -15,3 +15,5 @@ func _ready() -> void:
 
 func _on_player_collided() -> void:
 	GameState.set_phase(GameState.GamePhase.GAME_OVER)
+	await get_tree().create_timer(1.5).timeout
+	get_tree().change_scene_to_file("res://scenes/ui/game_over.tscn")

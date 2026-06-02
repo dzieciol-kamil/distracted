@@ -4,7 +4,7 @@ extends Node3D
 @onready var hazard_container: Node3D = $WorldContainer/HazardContainer
 
 func _ready() -> void:
-	GameState.reset()
+	GameState.reset_metrics()
 	GameState.phase_changed.connect(_on_phase_changed)
 	NotificationManager.start()
 	HazardSpawner.start(player)

@@ -10,9 +10,9 @@ func _ready() -> void:
 	menu_button.pressed.connect(_on_menu_pressed)
 
 func _on_retry_pressed() -> void:
-	GameState.reset()
+	GameState.reset_metrics()
 	SceneManager.go_to("game")
 
 func _on_menu_pressed() -> void:
-	GameState.reset()
+	GameState.reset_metrics()
 	SceneManager.go_to("main_menu")

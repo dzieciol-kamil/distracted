@@ -29,6 +29,10 @@ func _input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("stop"):
 		stop_pressed.emit()
+		if walk_state == WalkState.WALKING:
+			set_stopped()
+		else:
+			set_walking()
 	elif event.is_action_pressed("check_phone"):
 		check_phone_pressed.emit()
 	elif event.is_action_pressed("dismiss_notification"):

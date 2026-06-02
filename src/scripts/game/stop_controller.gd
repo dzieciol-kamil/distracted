@@ -46,6 +46,7 @@ func _on_phone_timer_elapsed() -> void:
 
 func _on_phase_changed(new_phase: GameState.GamePhase) -> void:
 	if new_phase == GameState.GamePhase.ROAD:
+		_phone_timer.stop()
 		# phone closed: if no hazards active, auto-resume; if hazards active, stay stopped until cleared
 		if _player == null:
 			return

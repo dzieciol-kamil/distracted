@@ -31,6 +31,7 @@ func _input(event: InputEvent) -> void:
 		stop_pressed.emit()
 	elif event.is_action_pressed("check_phone"):
 		check_phone_pressed.emit()
+		NotificationManager.request_check_phone()
 	elif event.is_action_pressed("dismiss_notification"):
 		if GameState.phase == GameState.GamePhase.PHONE:
 			NotificationManager.dismiss_current()

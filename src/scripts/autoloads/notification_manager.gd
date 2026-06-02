@@ -27,7 +27,6 @@ func _ready() -> void:
 	_interval_timer.timeout.connect(_on_safe_window_elapsed)
 	add_child(_interval_timer)
 	GameState.phase_changed.connect(_on_phase_changed)
-	call_deferred("start")
 
 func start() -> void:
 	_running = true

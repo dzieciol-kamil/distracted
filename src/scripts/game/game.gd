@@ -1,15 +1,15 @@
 extends Node3D
 
-@onready var player: CharacterBody3D = $Player
-@onready var hazard_container: Node3D = $WorldContainer/HazardContainer
+@onready var _world_container: Node3D = $WorldContainer
+@onready var _hazard_container: Node3D = $WorldContainer/HazardContainer
+@onready var _player: Node3D = $Player
 
 func _ready() -> void:
 	GameState.reset_metrics()
-	GameState.phase_changed.connect(_on_phase_changed)
+	HazardSpawner.bind_scene(_hazard_container, _player)
+	HazardSpawner.start()
 	NotificationManager.start()
-	HazardSpawner.start(player)
+	_player.collided_with_hazard.connect(_on_player_collided)
 
-func _on_phase_changed(new_phase: GameState.GamePhase) -> void:
-	if new_phase == GameState.GamePhase.GAME_OVER:
-		await get_tree().create_timer(1.5).timeout
-		SceneManager.go_to("game_over")
+func _on_player_collided() -> void:
+	GameState.set_phase(GameState.GamePhase.GAME_OVER)

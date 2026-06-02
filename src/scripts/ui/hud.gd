@@ -1,6 +1,7 @@
 extends CanvasLayer
 
-signal stop_requested
+signal stop_hold_started
+signal stop_hold_released
 
 @onready var _distance_label: Label = $DistanceLabel
 @onready var _notification_area: Control = $NotificationArea
@@ -14,7 +15,8 @@ func _ready() -> void:
 	NotificationManager.phone_dismissed.connect(_on_phone_dismissed)
 	NotificationManager.phone_opened.connect(_on_phone_opened)
 	_notification_icon.pressed.connect(_on_notification_icon_pressed)
-	_stop_button.pressed.connect(_on_stop_button_pressed)
+	_stop_button.button_down.connect(_on_stop_button_down)
+	_stop_button.button_up.connect(_on_stop_button_up)
 	_willpower_bar.max_value = NotificationManager.WILLPOWER_MAX_MVP
 
 func _process(_delta: float) -> void:
@@ -37,5 +39,8 @@ func _on_phone_dismissed() -> void:
 func _on_notification_icon_pressed() -> void:
 	NotificationManager.request_check_phone()
 
-func _on_stop_button_pressed() -> void:
-	stop_requested.emit()
+func _on_stop_button_down() -> void:
+	stop_hold_started.emit()
+
+func _on_stop_button_up() -> void:
+	stop_hold_released.emit()

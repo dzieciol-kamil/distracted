@@ -13,10 +13,14 @@ func _ready() -> void:
 	NotificationManager.start()
 	_stop_controller.bind_player(_player)
 	_player.collided_with_hazard.connect(_on_player_collided)
-	_hud.stop_requested.connect(_on_ui_stop_requested)
+	_hud.stop_hold_started.connect(_on_ui_stop_hold_started)
+	_hud.stop_hold_released.connect(_on_ui_stop_hold_released)
 
-func _on_ui_stop_requested() -> void:
-	_player.stop_pressed.emit()
+func _on_ui_stop_hold_started() -> void:
+	_player.set_stopped()
+
+func _on_ui_stop_hold_released() -> void:
+	_player.set_walking()
 
 func _on_player_collided() -> void:
 	if GameState.phase == GameState.GamePhase.GAME_OVER:

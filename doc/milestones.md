@@ -1,6 +1,10 @@
 # Distracted — Milestony
 
-## M1 — Vertical slice (moment prawdy)
+## M1 — Vertical slice (moment prawdy) ✅ DONE 2026-06-02
+
+Merged w `main` (c2df0ef). Spec: `doc/specs/2026-06-02-core-loop-mvp-design.md`, plan: `doc/plans/2026-06-02-core-loop-mvp.md`. Playtester (15 lat) zagrała 8 razy — core fantasy działa.
+
+Pivot vs original sketch: ścieżka przez pola (nie chodnik), traktor jako hazard (nie kałuża).
 
 **Cel:** Rdzeń się broni albo nie. Jedna grywalna scena, faza 1 (village), end-to-end.
 

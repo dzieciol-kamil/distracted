@@ -82,7 +82,7 @@ Każdy task kończy się:
 - Modify: `src/resources/hazard_entry.gd`
 - Modify: `src/resources/zones/zone_village.tres`
 
-- [ ] **Step 1: Extend zone.gd with visual fields**
+- [ ] **Step 1: Extend zone.gd with visual fields + path_width**
 
 Replace contents of `/Users/kamil/Projects/distracted/src/resources/zone.gd` with:
 
@@ -98,12 +98,13 @@ extends Resource
 @export var hazard_pool: Array[HazardEntry] = []
 @export var lane_count: int = 1
 
+@export var path_width: float = 3.6
 @export var path_color: Color = Color(0.4, 0.3, 0.2)
 @export var stripe_color: Color = Color(0.85, 0.78, 0.55)
 @export var stripe_orientation: int = 0
 ```
 
-Defaults dla path_color (brąz wiejski) i stripe_color (piaskowy) zachowują dotychczasowy wygląd village. `stripe_orientation` 0 = poprzeczne kreski (village), 1 = podłużne linie (suburb).
+Defaults dla path_color (brąz wiejski) i stripe_color (piaskowy) zachowują dotychczasowy wygląd village. `stripe_orientation` 0 = poprzeczne kreski (village), 1 = podłużne linie (suburb). `path_width` default 3.6 jak w M2a. Village będzie 2.8 (wąska ścieżka), suburb 3.6.
 
 - [ ] **Step 2: Extend hazard_entry.gd with is_lane_obstacle**
 
@@ -144,10 +145,13 @@ spawn_interval_min = 25.0
 spawn_interval_max = 40.0
 hazard_pool = Array[ExtResource("2_entry")]([ExtResource("3_traktor"), ExtResource("4_pies"), ExtResource("5_krowa")])
 lane_count = 1
+path_width = 2.8
 path_color = Color(0.4, 0.3, 0.2, 1)
 stripe_color = Color(0.85, 0.78, 0.55, 1)
 stripe_orientation = 0
 ```
+
+`path_width = 2.8` jest WĘŻSZE niż dotychczasowe 3.6 — wiejska ścieżka przez pola powinna być wizualnie wąska. To zmiana M2a → M2b widoczna jako "ścieżka się zwęża" (faktycznie chunki staną się 2.8 wide). Traktor body 2.8 prawie wypełnia path — wzmacnia "musisz stać aż przejedzie" feel (i tak nie ma jak ominąć). Krowa 1.6 i pies 0.4 mieszczą się luźno.
 
 - [ ] **Step 4: Walidacja headless**
 
@@ -321,8 +325,8 @@ extends CharacterBody3D
 
 enum WalkState { WALKING, STOPPED }
 
-const LANE_POSITIONS_2: Array[float] = [-0.9, 0.9]
 const LANE_TWEEN_DURATION: float = 0.2
+const ZONE_TRANSITION_TWEEN_DURATION: float = 0.1  # half of lane switch
 
 signal collided_with_hazard
 signal stop_pressed
@@ -387,37 +391,38 @@ func _try_lane_switch(delta_lane: int) -> void:
 func _lane_x_for(lane_index: int, lane_count: int) -> float:
 	if lane_count == 1:
 		return 0.0
-	if lane_count == 2:
-		return LANE_POSITIONS_2[lane_index]
-	var step: float = 1.8
-	var start: float = -((lane_count - 1) * step) / 2.0
-	return start + lane_index * step
+	var path_width: float = GameState.current_zone.path_width if GameState.current_zone else 3.6
+	var lane_width: float = path_width / float(lane_count)
+	return (float(lane_index) - float(lane_count - 1) / 2.0) * lane_width
 
-func reset_lane_for_current_zone() -> void:
+func reset_lane_for_current_zone(animate: bool = false) -> void:
 	if GameState.current_zone == null:
 		return
 	var lane_count: int = GameState.current_zone.lane_count
 	if lane_count == 1:
 		current_lane = 0
 	else:
-		current_lane = clampi(current_lane, 0, lane_count - 1)
-		if current_lane == 0:
-			current_lane = 1  # default to right lane in 2-lane zones
-	position.x = _lane_x_for(current_lane, lane_count)
+		current_lane = randi() % lane_count
+	var target_x: float = _lane_x_for(current_lane, lane_count)
 	if _lane_tween:
 		_lane_tween.kill()
 		_lane_tween = null
+	if animate:
+		_lane_tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+		_lane_tween.tween_property(self, "position:x", target_x, ZONE_TRANSITION_TWEEN_DURATION)
+	else:
+		position.x = target_x
 ```
 
 Changes vs M2a player.gd:
-- Added `LANE_POSITIONS_2` const + `LANE_TWEEN_DURATION` const
+- Added `LANE_TWEEN_DURATION` const + `ZONE_TRANSITION_TWEEN_DURATION` const (no LANE_POSITIONS_2 const — formula-based from current_zone.path_width)
 - Added `current_lane: int = 0` + `_lane_tween: Tween = null` state
 - Added `lane_left` and `lane_right` action handlers in `_input` (guard: only when `current_zone.lane_count >= 2`)
 - Added `_try_lane_switch(delta_lane)` — tween-driven lane change with kill-previous-tween
-- Added `_lane_x_for(lane_index, lane_count)` — geometric lane position calculator (supports 1, 2, 3+ lanes)
-- Added `reset_lane_for_current_zone()` — sets lane and position based on zone; called by Game in Task 11
+- Added `_lane_x_for(lane_index, lane_count)` — geometric lane position calculator reading `current_zone.path_width` (supports 1, 2, 3+ lanes; LANE_POSITIONS_2 const removed since formula handles 2-lane suburb at path 3.6 → ±0.9)
+- Added `reset_lane_for_current_zone(animate)` — random lane selection; if animate=true uses 0.1s tween (half of LANE_TWEEN_DURATION), else instant set
 
-Wybór "default to right lane" w 2-lane zone (current_lane = 1) odpowiada konwencji "right side of road" w PL.
+Random lane selection (zamiast zawsze prawy): gracz wchodzący w suburb ląduje na losowym pasie — dodaje element zaskoczenia, zmusza do orientacji.
 
 - [ ] **Step 2: Walidacja headless**
 
@@ -438,14 +443,18 @@ cd /Users/kamil/Projects/distracted
 git add src/scripts/game/player.gd
 git commit -m "feat(player): lane mechanic with tween (active in 2+ lane zones)
 
-LANE_POSITIONS_2 = [-0.9, +0.9]. Tween 0.2s EASE_IN_OUT cubic.
-lane_left/lane_right inputs trigger _try_lane_switch which kills
-previous tween and starts new one. _lane_x_for supports 1/2/3+
-lanes via geometric calculation.
+Tween 0.2s EASE_IN_OUT cubic. lane_left/lane_right inputs trigger
+_try_lane_switch which kills previous tween and starts new one.
+_lane_x_for computes positions from current_zone.path_width:
+(lane_idx - (count-1)/2) * (path_width / count). Supports 1/2/3+
+lanes geometrically. Village 1-lane: x=0. Suburb 2-lane path 3.6:
+x=±0.9.
 
-reset_lane_for_current_zone — sets initial lane based on zone's
-lane_count (center for 1-lane, right for 2-lane). Called by
-Game on zone transition + reset.
+reset_lane_for_current_zone(animate=false) — sets random lane
+(randi() % lane_count) based on zone's lane_count (0 for 1-lane,
+random for 2-lane). If animate=true uses 0.1s tween (half of lane
+switch, ZONE_TRANSITION_TWEEN_DURATION). Called by Game on zone
+transition (animate=true) + initial reset (animate=false).
 
 Guards prevent lane action in 1-lane zones (village) — Player
 stays at x=0 there, unchanged behavior.
@@ -856,10 +865,13 @@ spawn_interval_min = 18.0
 spawn_interval_max = 32.0
 hazard_pool = Array[ExtResource("2_entry")]([ExtResource("3_ciezarowka"), ExtResource("4_samochod"), ExtResource("5_pies"), ExtResource("6_kaluza"), ExtResource("7_latarnia"), ExtResource("8_skrzynka")])
 lane_count = 2
+path_width = 3.6
 path_color = Color(0.4, 0.4, 0.45, 1)
 stripe_color = Color(1, 1, 1, 1)
 stripe_orientation = 1
 ```
+
+`path_width = 3.6` — szerszy niż village 2.8. Wizualnie "więcej miejsca" przy zone transition. Lanes computed via formula: x = ±0.9 (suburb 2 lanes, path 3.6 — half-step from center per lane).
 
 Pool sums to weight 12: crossing (ciezarowka+samochod+pies) = 7, lane (kaluza+latarnia+skrzynka) = 5. Probability split ~58% crossing / ~42% lane.
 
@@ -1015,14 +1027,24 @@ func _spawn_hazard() -> void:
 		hazard.position = Vector3(lane_x, 0.5, _player.global_position.z - lookahead)
 	else:
 		var spawn_side: float = 1.0 if randf() < 0.5 else -1.0
-		hazard.position = Vector3(SPAWN_X_ABS * spawn_side, 0.75, _player.global_position.z - lookahead)
+		var path_half_width: float = GameState.current_zone.path_width / 2.0
+		var spawn_x: float = (path_half_width + SPAWN_X_BUFFER) * spawn_side
+		hazard.position = Vector3(spawn_x, 0.75, _player.global_position.z - lookahead)
 
 	_container.add_child(hazard)
 	hazard.cleared.connect(_on_hazard_cleared)
 	hazard_spawned.emit(hazard)
 ```
 
-- [ ] **Step 2: Add _lane_x_for_spawn helper at end of file**
+- [ ] **Step 2: Add SPAWN_X_BUFFER const + _lane_x_for_spawn helper**
+
+Near the top of the file (after `extends Node`), add the buffer constant:
+
+```gdscript
+const SPAWN_X_BUFFER: float = 1.7
+```
+
+And REMOVE the old `SPAWN_X_ABS` const (replaced by per-zone formula above).
 
 Append at end of file:
 
@@ -1030,16 +1052,13 @@ Append at end of file:
 func _lane_x_for_spawn(lane_count: int) -> float:
 	if lane_count == 1:
 		return 0.0
-	if lane_count == 2:
-		var lane: int = 0 if randf() < 0.5 else 1
-		return -0.9 if lane == 0 else 0.9
+	var path_width: float = GameState.current_zone.path_width
+	var lane_width: float = path_width / float(lane_count)
 	var lane: int = randi() % lane_count
-	var step: float = 1.8
-	var start: float = -((lane_count - 1) * step) / 2.0
-	return start + lane * step
+	return (float(lane) - float(lane_count - 1) / 2.0) * lane_width
 ```
 
-Geometric formula supports 1/2/3+ lanes (3+ for M2c town/city).
+Both crossing SPAWN_X (`path_half_width + SPAWN_X_BUFFER`) and lane positions (`(lane - (count-1)/2) * lane_width`) computed from zone path_width. Village (path 2.8): SPAWN_X 3.1. Suburb (path 3.6): SPAWN_X 3.5 (matches M2a value).
 
 - [ ] **Step 3: Walidacja headless**
 
@@ -1054,18 +1073,21 @@ Expected: zero ERRORs.
 ```bash
 cd /Users/kamil/Projects/distracted
 git add src/scripts/autoloads/hazard_spawner.gd
-git commit -m "feat(hazards): HazardSpawner lane-obstacle spawn branch
+git commit -m "feat(hazards): HazardSpawner data-driven SPAWN_X + lane-obstacle branch
 
 _spawn_hazard checks entry.is_lane_obstacle:
-- true: spawn at lane_x (random lane from current_zone.lane_count),
-  y=0.5, fixed z ahead — static lane obstacle
-- false: existing crossing behavior (SPAWN_X_ABS ± side, y=0.75)
+- true: spawn at lane_x (random lane from current_zone), y=0.5,
+  fixed z ahead — static lane obstacle
+- false: spawn at path_half_width + SPAWN_X_BUFFER (1.7), random
+  side, y=0.75 — crossing hazard
 
-_lane_x_for_spawn supports 1/2/3+ lanes geometrically.
+Removed SPAWN_X_ABS const (was 3.5 hardcoded). Both crossing
+spawn_x and lane positions computed from current_zone.path_width:
+village 2.8 → SPAWN_X 3.1, lanes [0]. Suburb 3.6 → SPAWN_X 3.5,
+lanes ±0.9.
 
-In village (lane_count=1) lane obstacles spawn at x=0 — no lane
-obstacles in village pool currently, so this is forward-compat
-only. In suburb (lane_count=2) random ±0.9 lane.
+_lane_x_for_spawn formula: (lane - (count-1)/2) * (path_width /
+count). Supports 1/2/3+ lanes.
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ```
@@ -1113,10 +1135,13 @@ Add the handler at end of file:
 
 ```gdscript
 func _on_zone_changed(_new_zone: GameState.ZoneIndex) -> void:
-	_player.reset_lane_for_current_zone()
+	_player.reset_lane_for_current_zone(true)
 ```
 
-`reset_lane_for_current_zone()` called once at start (village → center) and again on every zone transition. When entering suburb from village, player is moved to right lane (x=+0.9) safely.
+Initial call w `_ready` używa `animate=false` (instant set na starcie gry).
+Zone transition handler używa `animate=true` (0.1s tween — half lane-switch animation).
+
+Gdy gracz wchodzi w suburb z village, ląduje na losowym pasie (-0.9 lub +0.9) płynnym animowanym ruchem.
 
 - [ ] **Step 2: Walidacja headless**
 
@@ -1138,13 +1163,14 @@ git add src/scripts/game/game.gd
 git commit -m "feat(game): zone_changed handler + initial Player lane reset
 
 Game._ready: connect GameState.zone_changed → call
-_player.reset_lane_for_current_zone() on every zone transition.
-Also called once in _ready after reset_metrics (initial state
-sync for village center).
+_player.reset_lane_for_current_zone(true) on every zone transition
+(animated 0.1s half-tween). Also called once in _ready after
+reset_metrics with animate=false (instant initial set for village
+center).
 
 When player crosses 500m, zone changes village→suburb, Player
-jumps to right lane (x=+0.9). From there A/D toggle between
-lanes via tween.
+tweens to random lane (-0.9 or +0.9) with 0.1s ease-out animation.
+From there A/D toggle between lanes via 0.2s tween.
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ```
@@ -1215,13 +1241,14 @@ func _recycle(chunk: Node3D) -> void:
 
 func _build_chunk_visuals(chunk: Node3D) -> void:
 	var zone: Resource = GameState.current_zone
+	var path_width: float = zone.path_width if zone != null else 3.6
 	var path_color: Color = zone.path_color if zone != null else Color(0.4, 0.3, 0.2)
 	var stripe_color: Color = zone.stripe_color if zone != null else Color(0.85, 0.78, 0.55)
 	var stripe_orientation: int = zone.stripe_orientation if zone != null else 0
 
 	var path_mesh: MeshInstance3D = MeshInstance3D.new()
 	var path_box: BoxMesh = BoxMesh.new()
-	path_box.size = Vector3(3.6, 0.1, CHUNK_LENGTH)
+	path_box.size = Vector3(path_width, 0.1, CHUNK_LENGTH)
 	path_mesh.mesh = path_box
 	path_mesh.position = Vector3(0, -0.05, -CHUNK_LENGTH / 2.0)
 	var path_material: StandardMaterial3D = StandardMaterial3D.new()
@@ -1234,7 +1261,7 @@ func _build_chunk_visuals(chunk: Node3D) -> void:
 
 	if stripe_orientation == 0:
 		var stripe_box: BoxMesh = BoxMesh.new()
-		stripe_box.size = Vector3(3.4, 0.04, STRIPE_LENGTH_TRANSVERSE)
+		stripe_box.size = Vector3(path_width - 0.2, 0.04, STRIPE_LENGTH_TRANSVERSE)
 		var z: float = -STRIPE_INTERVAL
 		while z > -CHUNK_LENGTH:
 			var stripe: MeshInstance3D = MeshInstance3D.new()
@@ -1283,18 +1310,21 @@ Run game. Village: tan path with transverse stripes (same as M2a). Cross 500m: s
 ```bash
 cd /Users/kamil/Projects/distracted
 git add src/scripts/game/chunk_manager.gd
-git commit -m "feat(chunks): per-zone visuals (village transverse vs suburb longitudinal)
+git commit -m "feat(chunks): per-zone visuals + path_width (village narrow, suburb wider)
 
-ChunkManager now reads GameState.current_zone for path_color,
-stripe_color, stripe_orientation. Pool stores bare Node3D shells;
-visuals built fresh per spawn (clear children + _build_chunk_visuals).
+ChunkManager reads GameState.current_zone for path_width,
+path_color, stripe_color, stripe_orientation. Path box scales
+width per zone: village 2.8 (narrow rural path), suburb 3.6
+(wider sidewalk). Pool stores bare Node3D shells; visuals built
+fresh per spawn (clear children + _build_chunk_visuals).
 
-stripe_orientation 0 (village): transverse tan stripes every 4m.
-stripe_orientation 1 (suburb): longitudinal white lane divider
-between lanes (segments + gap).
+stripe_orientation 0 (village): transverse tan stripes width
+path_width - 0.2 every 4m. stripe_orientation 1 (suburb):
+longitudinal white lane divider between lanes (segments + gap).
 
 Chunks spawn ahead of player; old chunks behind retain their zone
-visuals → natural biome blending at zone boundary.
+visuals → natural biome blending at zone boundary, including
+path width change.
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ```

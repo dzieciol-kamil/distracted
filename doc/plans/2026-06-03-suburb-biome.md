@@ -98,13 +98,13 @@ extends Resource
 @export var hazard_pool: Array[HazardEntry] = []
 @export var lane_count: int = 1
 
-@export var path_width: float = 3.6
+@export var path_width: float = 2.0
 @export var path_color: Color = Color(0.4, 0.3, 0.2)
 @export var stripe_color: Color = Color(0.85, 0.78, 0.55)
 @export var stripe_orientation: int = 0
 ```
 
-Defaults dla path_color (brąz wiejski) i stripe_color (piaskowy) zachowują dotychczasowy wygląd village. `stripe_orientation` 0 = poprzeczne kreski (village), 1 = podłużne linie (suburb). `path_width` default 3.6 jak w M2a. Village będzie 2.8 (wąska ścieżka), suburb 3.6.
+Defaults dla path_color (brąz wiejski) i stripe_color (piaskowy) zachowują dotychczasowy wygląd village. `stripe_orientation` 0 = poprzeczne kreski (village), 1 = podłużne linie (suburb). `path_width` default 2.0 (lane width unit). Village 2.0 (1 pas), suburb 4.0 (2 pasy × 2.0), future city 6.0 (3 pasy × 2.0). Uniform lane width 2.0 means switch distance constant across zones.
 
 - [ ] **Step 2: Extend hazard_entry.gd with is_lane_obstacle**
 
@@ -145,13 +145,13 @@ spawn_interval_min = 25.0
 spawn_interval_max = 40.0
 hazard_pool = Array[ExtResource("2_entry")]([ExtResource("3_traktor"), ExtResource("4_pies"), ExtResource("5_krowa")])
 lane_count = 1
-path_width = 2.8
+path_width = 2.0
 path_color = Color(0.4, 0.3, 0.2, 1)
 stripe_color = Color(0.85, 0.78, 0.55, 1)
 stripe_orientation = 0
 ```
 
-`path_width = 2.8` jest WĘŻSZE niż dotychczasowe 3.6 — wiejska ścieżka przez pola powinna być wizualnie wąska. To zmiana M2a → M2b widoczna jako "ścieżka się zwęża" (faktycznie chunki staną się 2.8 wide). Traktor body 2.8 prawie wypełnia path — wzmacnia "musisz stać aż przejedzie" feel (i tak nie ma jak ominąć). Krowa 1.6 i pies 0.4 mieszczą się luźno.
+`path_width = 2.0` — wąska udeptana ścieżka (placeholder; player-width). To zmiana M2a → M2b widoczna jako "ścieżka się zwęża" (chunki 3.6 → 2.0). Traktor body 2.8 jest 40% szerszy niż ścieżka — wizualnie dominujący, blokuje całą widoczność, player musi czekać (zgodnie z mechaniką stop). Krowa 1.6 i pies 0.4 mieszczą się.
 
 - [ ] **Step 4: Walidacja headless**
 
@@ -865,13 +865,13 @@ spawn_interval_min = 18.0
 spawn_interval_max = 32.0
 hazard_pool = Array[ExtResource("2_entry")]([ExtResource("3_ciezarowka"), ExtResource("4_samochod"), ExtResource("5_pies"), ExtResource("6_kaluza"), ExtResource("7_latarnia"), ExtResource("8_skrzynka")])
 lane_count = 2
-path_width = 3.6
+path_width = 4.0
 path_color = Color(0.4, 0.4, 0.45, 1)
 stripe_color = Color(1, 1, 1, 1)
 stripe_orientation = 1
 ```
 
-`path_width = 3.6` — szerszy niż village 2.8. Wizualnie "więcej miejsca" przy zone transition. Lanes computed via formula: x = ±0.9 (suburb 2 lanes, path 3.6 — half-step from center per lane).
+`path_width = 4.0` — dwa razy szerszy niż village 2.0. Lanes computed via formula `(idx - (count-1)/2) * (path_width / count)`: lane 0 = -1.0, lane 1 = +1.0 (each lane width 2.0). Future city 3 lanes → path 6.0, lanes at -2/0/+2 (same 2.0 width per lane).
 
 Pool sums to weight 12: crossing (ciezarowka+samochod+pies) = 7, lane (kaluza+latarnia+skrzynka) = 5. Probability split ~58% crossing / ~42% lane.
 
@@ -1041,7 +1041,7 @@ func _spawn_hazard() -> void:
 Near the top of the file (after `extends Node`), add the buffer constant:
 
 ```gdscript
-const SPAWN_X_BUFFER: float = 1.7
+const SPAWN_X_BUFFER: float = 2.0
 ```
 
 And REMOVE the old `SPAWN_X_ABS` const (replaced by per-zone formula above).
@@ -1058,7 +1058,7 @@ func _lane_x_for_spawn(lane_count: int) -> float:
 	return (float(lane) - float(lane_count - 1) / 2.0) * lane_width
 ```
 
-Both crossing SPAWN_X (`path_half_width + SPAWN_X_BUFFER`) and lane positions (`(lane - (count-1)/2) * lane_width`) computed from zone path_width. Village (path 2.8): SPAWN_X 3.1. Suburb (path 3.6): SPAWN_X 3.5 (matches M2a value).
+Both crossing SPAWN_X (`path_half_width + SPAWN_X_BUFFER`) and lane positions (`(lane - (count-1)/2) * lane_width`) computed from zone path_width. Village (path 2.0): SPAWN_X 3.0. Suburb (path 4.0): SPAWN_X 4.0. Future city (path 6.0): SPAWN_X 5.0. Buffer 2.0 gives consistent ~0.6 margin past path edge for traktor body 1.4.
 
 - [ ] **Step 3: Walidacja headless**
 
@@ -1083,8 +1083,9 @@ _spawn_hazard checks entry.is_lane_obstacle:
 
 Removed SPAWN_X_ABS const (was 3.5 hardcoded). Both crossing
 spawn_x and lane positions computed from current_zone.path_width:
-village 2.8 → SPAWN_X 3.1, lanes [0]. Suburb 3.6 → SPAWN_X 3.5,
-lanes ±0.9.
+village 2.0 → SPAWN_X 3.0, lanes [0]. Suburb 4.0 → SPAWN_X 4.0,
+lanes ±1.0. Future city 6.0 → SPAWN_X 5.0, lanes -2/0/+2.
+Uniform lane width 2.0 across all multi-lane zones.
 
 _lane_x_for_spawn formula: (lane - (count-1)/2) * (path_width /
 count). Supports 1/2/3+ lanes.

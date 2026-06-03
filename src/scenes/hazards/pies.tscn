@@ -3,17 +3,17 @@
 [ext_resource type="Script" path="res://scripts/hazards/hazard.gd" id="1_hazard"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
-size = Vector3(2.8, 2.6, 4.0)
+size = Vector3(0.4, 0.4, 0.6)
 
 [sub_resource type="StandardMaterial3D" id="Material_1"]
-albedo_color = Color(0.55, 0.27, 0.18, 1)
+albedo_color = Color(0.45, 0.25, 0.1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(2.8, 2.6, 4.0)
+size = Vector3(0.4, 0.4, 0.6)
 
-[node name="Tractor" type="Area3D"]
+[node name="Pies" type="Area3D"]
 script = ExtResource("1_hazard")
-lateral_speed = 1.8
+lateral_speed = 4.0
 collision_layer = 4
 collision_mask = 2
 

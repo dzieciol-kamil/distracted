@@ -3,12 +3,7 @@ extends Node
 signal hazard_spawned(node: Node3D)
 signal hazard_cleared(node: Node3D)
 
-const TRACTOR_SCENE: PackedScene = preload("res://scenes/hazards/tractor.tscn")
-const SPAWN_INTERVAL_MIN: float = 25.0
-const SPAWN_INTERVAL_MAX: float = 40.0
-const SPAWN_LOOKAHEAD_MIN: float = 12.0
-const SPAWN_LOOKAHEAD_MAX: float = 15.0
-const SPAWN_X: float = -3.0
+const SPAWN_X_ABS: float = 3.5
 
 var _container: Node3D = null
 var _player: Node3D = null
@@ -34,23 +29,50 @@ func _process(_delta: float) -> void:
 		return
 	if _container == null or _player == null:
 		return
+	if GameState.current_zone == null:
+		return
 	if GameState.distance >= _next_spawn_distance:
-		_spawn_tractor()
+		_spawn_hazard()
 		_schedule_next_spawn()
 
-func _spawn_tractor() -> void:
-	var tractor: Node3D = TRACTOR_SCENE.instantiate()
-	var lookahead: float = randf_range(SPAWN_LOOKAHEAD_MIN, SPAWN_LOOKAHEAD_MAX)
-	tractor.position = Vector3(SPAWN_X, 0.75, _player.global_position.z - lookahead)
-	_container.add_child(tractor)
-	tractor.cleared.connect(_on_tractor_cleared)
-	hazard_spawned.emit(tractor)
+func _spawn_hazard() -> void:
+	var entry = _pick_hazard_entry()
+	if entry == null or entry.scene == null:
+		return
+	var hazard: Node3D = entry.scene.instantiate()
+	var lookahead: float = randf_range(entry.spawn_lookahead_min, entry.spawn_lookahead_max)
+	var spawn_side: float = 1.0 if randf() < 0.5 else -1.0
+	hazard.position = Vector3(SPAWN_X_ABS * spawn_side, 0.75, _player.global_position.z - lookahead)
+	_container.add_child(hazard)
+	hazard.cleared.connect(_on_hazard_cleared)
+	hazard_spawned.emit(hazard)
 
-func _on_tractor_cleared(node: Node3D) -> void:
+func _pick_hazard_entry():
+	var pool = GameState.current_zone.hazard_pool
+	if pool.is_empty():
+		return null
+	var total: int = 0
+	for entry in pool:
+		total += entry.weight
+	if total <= 0:
+		return pool[0]
+	var roll: int = randi() % total
+	var acc: int = 0
+	for entry in pool:
+		acc += entry.weight
+		if roll < acc:
+			return entry
+	return pool[0]
+
+func _on_hazard_cleared(node: Node3D) -> void:
 	hazard_cleared.emit(node)
 
 func _schedule_next_spawn() -> void:
-	_next_spawn_distance = GameState.distance + randf_range(SPAWN_INTERVAL_MIN, SPAWN_INTERVAL_MAX)
+	if GameState.current_zone == null:
+		return
+	var zone = GameState.current_zone
+	var interval: float = randf_range(zone.spawn_interval_min, zone.spawn_interval_max)
+	_next_spawn_distance = GameState.distance + interval
 
 func _on_phase_changed(new_phase: GameState.GamePhase) -> void:
 	if new_phase == GameState.GamePhase.GAME_OVER:

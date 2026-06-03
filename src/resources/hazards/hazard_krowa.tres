@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="HazardEntry" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/hazard_entry.gd" id="1_entry"]
+[ext_resource type="PackedScene" path="res://scenes/hazards/krowa.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_entry")
+scene = ExtResource("2_scene")
+weight = 1
+spawn_lookahead_min = 14.0
+spawn_lookahead_max = 18.0

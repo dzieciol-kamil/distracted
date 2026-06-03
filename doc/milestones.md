@@ -29,6 +29,8 @@ Pivot vs original sketch: ścieżka przez pola (nie chodnik), traktor jako hazar
 
 ## M2 — Fazy + skalowanie systemów
 
+**M2a Village Variety DONE 2026-06-03.** Pies + krowa + traktor (resized), random spawn side, HazardEntry + Zone Resources (data-driven foundation). Merged w c2df0ef... 934c832. Spec: `doc/specs/2026-06-03-village-variety-design.md`. Plan: `doc/plans/2026-06-03-village-variety.md`.
+
 **Cel:** Village → Suburb jako data (nie nowy kod).
 
 **Zakres:**

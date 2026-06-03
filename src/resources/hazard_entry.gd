@@ -5,3 +5,4 @@ extends Resource
 @export var weight: int = 1
 @export var spawn_lookahead_min: float = 12.0
 @export var spawn_lookahead_max: float = 15.0
+@export var is_lane_obstacle: bool = false

@@ -17,7 +17,6 @@ func _ready() -> void:
 	_notification_icon.pressed.connect(_on_notification_icon_pressed)
 	_stop_button.button_down.connect(_on_stop_button_down)
 	_stop_button.button_up.connect(_on_stop_button_up)
-	_willpower_bar.max_value = NotificationManager.WILLPOWER_MAX_MVP
 
 func _process(_delta: float) -> void:
 	if NotificationManager.willpower_active:
@@ -27,7 +26,9 @@ func _on_score_changed(new_score: int) -> void:
 	_distance_label.text = "%d m" % new_score
 
 func _on_notification_arrived(_notification) -> void:
-	_willpower_bar.value = NotificationManager.WILLPOWER_MAX_MVP
+	var max_value: float = NotificationManager.willpower_remaining
+	_willpower_bar.max_value = max_value
+	_willpower_bar.value = max_value
 	_notification_area.visible = true
 
 func _on_phone_opened(_voluntary: bool) -> void:

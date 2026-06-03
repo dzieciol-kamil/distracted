@@ -1,5 +1,7 @@
 extends Node
 
+const ZONE_VILLAGE: Resource = preload("res://resources/zones/zone_village.tres")
+
 enum GamePhase { ROAD, PHONE, GAME_OVER }
 enum ZoneIndex { VILLAGE, SUBURB, TOWN, CITY }
 
@@ -14,6 +16,7 @@ signal score_changed(new_score: int)
 var phase: GamePhase = GamePhase.ROAD
 var zone: ZoneIndex = ZoneIndex.VILLAGE
 var distance: float = 0.0
+var current_zone: Resource = ZONE_VILLAGE
 var time_on_phone: float = 0.0
 var total_time: float = 0.0
 var score: int = 0
@@ -36,7 +39,8 @@ func reset_metrics() -> void:
 	time_on_phone = 0.0
 	total_time = 0.0
 	score = 0
-	speed = ZONE_SPEEDS[0]
+	current_zone = ZONE_VILLAGE
+	speed = current_zone.walk_speed
 
 func set_phase(new_phase: GamePhase) -> void:
 	if phase == new_phase:

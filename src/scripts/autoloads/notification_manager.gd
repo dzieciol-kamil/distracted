@@ -83,7 +83,7 @@ func _on_safe_window_elapsed() -> void:
 	if _all.is_empty():
 		return
 	current_notification = _all.pick_random()
-	willpower_remaining = WILLPOWER_MAX_MVP
+	willpower_remaining = _current_willpower_max()
 	willpower_active = true
 	notification_arrived.emit(current_notification)
 
@@ -97,3 +97,8 @@ func _open_phone(voluntary: bool) -> void:
 func _on_phase_changed(new_phase: GameState.GamePhase) -> void:
 	if new_phase == GameState.GamePhase.GAME_OVER:
 		stop()
+
+func _current_willpower_max() -> float:
+	if GameState.current_zone == null:
+		return WILLPOWER_MAX_MVP
+	return GameState.current_zone.willpower_max

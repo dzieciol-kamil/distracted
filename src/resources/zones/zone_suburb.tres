@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Zone" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://resources/zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://resources/hazard_entry.gd" id="2_entry"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_ciezarowka.tres" id="3_ciezarowka"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_samochod.tres" id="4_samochod"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_pies.tres" id="5_pies"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_kaluza.tres" id="6_kaluza"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_latarnia.tres" id="7_latarnia"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_skrzynka.tres" id="8_skrzynka"]
+
+[resource]
+script = ExtResource("1_zone")
+name_id = "suburb"
+walk_speed = 9.0
+willpower_max = 2.5
+spawn_interval_min = 18.0
+spawn_interval_max = 32.0
+hazard_pool = Array[ExtResource("2_entry")]([ExtResource("3_ciezarowka"), ExtResource("4_samochod"), ExtResource("5_pies"), ExtResource("6_kaluza"), ExtResource("7_latarnia"), ExtResource("8_skrzynka")])
+lane_count = 2
+path_width = 4.0
+path_color = Color(0.4, 0.4, 0.45, 1)
+stripe_color = Color(1, 1, 1, 1)
+stripe_orientation = 1

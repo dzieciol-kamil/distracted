@@ -3,7 +3,7 @@ extends Node
 signal hazard_spawned(node: Node3D)
 signal hazard_cleared(node: Node3D)
 
-const SPAWN_X_ABS: float = 3.5
+const SPAWN_X_BUFFER: float = 2.0
 
 var _container: Node3D = null
 var _player: Node3D = null
@@ -41,8 +41,17 @@ func _spawn_hazard() -> void:
 		return
 	var hazard: Node3D = entry.scene.instantiate()
 	var lookahead: float = randf_range(entry.spawn_lookahead_min, entry.spawn_lookahead_max)
-	var spawn_side: float = 1.0 if randf() < 0.5 else -1.0
-	hazard.position = Vector3(SPAWN_X_ABS * spawn_side, 0.75, _player.global_position.z - lookahead)
+
+	if entry.is_lane_obstacle:
+		var lane_count: int = GameState.current_zone.lane_count
+		var lane_x: float = _lane_x_for_spawn(lane_count)
+		hazard.position = Vector3(lane_x, 0.0, _player.global_position.z - lookahead)
+	else:
+		var spawn_side: float = 1.0 if randf() < 0.5 else -1.0
+		var path_half_width: float = GameState.current_zone.path_width / 2.0
+		var spawn_x: float = (path_half_width + SPAWN_X_BUFFER) * spawn_side
+		hazard.position = Vector3(spawn_x, 0.75, _player.global_position.z - lookahead)
+
 	_container.add_child(hazard)
 	hazard.cleared.connect(_on_hazard_cleared)
 	hazard_spawned.emit(hazard)
@@ -77,3 +86,11 @@ func _schedule_next_spawn() -> void:
 func _on_phase_changed(new_phase: GameState.GamePhase) -> void:
 	if new_phase == GameState.GamePhase.GAME_OVER:
 		stop()
+
+func _lane_x_for_spawn(lane_count: int) -> float:
+	if lane_count == 1:
+		return 0.0
+	var path_width: float = GameState.current_zone.path_width
+	var lane_width: float = path_width / float(lane_count)
+	var lane: int = randi() % lane_count
+	return (float(lane) - float(lane_count - 1) / 2.0) * lane_width

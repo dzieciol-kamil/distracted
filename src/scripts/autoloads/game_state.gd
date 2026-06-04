@@ -1,6 +1,8 @@
 extends Node
 
 const ZONE_VILLAGE: Resource = preload("res://resources/zones/zone_village.tres")
+const ZONE_SUBURB: Resource = preload("res://resources/zones/zone_suburb.tres")
+const ZONES: Array[Resource] = [ZONE_VILLAGE, ZONE_SUBURB]
 
 enum GamePhase { ROAD, PHONE, GAME_OVER }
 enum ZoneIndex { VILLAGE, SUBURB, TOWN, CITY }
@@ -68,5 +70,7 @@ func _update_zone() -> void:
 	if new_zone == zone:
 		return
 	zone = new_zone
-	speed = ZONE_SPEEDS[zone]
+	var safe_idx: int = mini(new_zone, ZONES.size() - 1)
+	current_zone = ZONES[safe_idx]
+	speed = current_zone.walk_speed
 	zone_changed.emit(zone)

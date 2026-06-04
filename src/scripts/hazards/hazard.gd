@@ -13,6 +13,8 @@ func _ready() -> void:
 	collision_layer = 4  # Layer 3 (Hazards)
 	collision_mask = 2   # Layer 2 (Player)
 	body_entered.connect(_on_body_entered)
+	if GameState.current_zone != null:
+		path_half_width = GameState.current_zone.path_width / 2.0
 	_direction = -signf(position.x)
 	if _direction == 0.0:
 		_direction = 1.0

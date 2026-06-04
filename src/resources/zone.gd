@@ -8,3 +8,8 @@ extends Resource
 @export var spawn_interval_max: float = 40.0
 @export var hazard_pool: Array[HazardEntry] = []
 @export var lane_count: int = 1
+
+@export var path_width: float = 2.0
+@export var path_color: Color = Color(0.4, 0.3, 0.2)
+@export var stripe_color: Color = Color(0.85, 0.78, 0.55)
+@export var stripe_orientation: int = 0

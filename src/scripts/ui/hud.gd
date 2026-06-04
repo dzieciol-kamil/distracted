@@ -2,21 +2,27 @@ extends CanvasLayer
 
 signal stop_hold_started
 signal stop_hold_released
+signal lane_left_requested
+signal lane_right_requested
 
 @onready var _distance_label: Label = $DistanceLabel
-@onready var _notification_area: Control = $NotificationArea
-@onready var _notification_icon: Button = $NotificationArea/NotificationIcon
+@onready var _notification_area: Button = $NotificationArea
+@onready var _notification_icon: Label = $NotificationArea/NotificationIcon
 @onready var _willpower_bar: ProgressBar = $NotificationArea/WillpowerBar
 @onready var _stop_button: Button = $StopButton
+@onready var _left_arrow_button: Button = $LeftArrowButton
+@onready var _right_arrow_button: Button = $RightArrowButton
 
 func _ready() -> void:
 	GameState.score_changed.connect(_on_score_changed)
 	NotificationManager.notification_arrived.connect(_on_notification_arrived)
 	NotificationManager.phone_dismissed.connect(_on_phone_dismissed)
 	NotificationManager.phone_opened.connect(_on_phone_opened)
-	_notification_icon.pressed.connect(_on_notification_icon_pressed)
+	_notification_area.pressed.connect(_on_notification_area_pressed)
 	_stop_button.button_down.connect(_on_stop_button_down)
 	_stop_button.button_up.connect(_on_stop_button_up)
+	_left_arrow_button.pressed.connect(_on_left_arrow_pressed)
+	_right_arrow_button.pressed.connect(_on_right_arrow_pressed)
 
 func _process(_delta: float) -> void:
 	if NotificationManager.willpower_active:
@@ -37,7 +43,7 @@ func _on_phone_opened(_voluntary: bool) -> void:
 func _on_phone_dismissed() -> void:
 	_notification_area.visible = false
 
-func _on_notification_icon_pressed() -> void:
+func _on_notification_area_pressed() -> void:
 	NotificationManager.request_check_phone()
 
 func _on_stop_button_down() -> void:
@@ -45,3 +51,9 @@ func _on_stop_button_down() -> void:
 
 func _on_stop_button_up() -> void:
 	stop_hold_released.emit()
+
+func _on_left_arrow_pressed() -> void:
+	lane_left_requested.emit()
+
+func _on_right_arrow_pressed() -> void:
+	lane_right_requested.emit()

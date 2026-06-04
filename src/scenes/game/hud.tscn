@@ -23,6 +23,7 @@ offset_right = 374.0
 offset_bottom = 112.0
 
 [node name="NotificationIcon" type="Label" parent="NotificationArea"]
+mouse_filter = 2
 offset_left = 0.0
 offset_top = 0.0
 offset_right = 48.0
@@ -32,6 +33,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="WillpowerBar" type="ProgressBar" parent="NotificationArea"]
+mouse_filter = 2
 offset_left = 56.0
 offset_top = 8.0
 offset_right = 358.0

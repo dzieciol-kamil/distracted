@@ -39,8 +39,8 @@ func _spawn_chunk() -> void:
 	var chunk: Node3D = _pool.pop_back()
 	for child in chunk.get_children():
 		child.queue_free()
-	_build_chunk_visuals(chunk)
 	chunk.position.z = _next_z
+	_build_chunk_visuals(chunk, _next_z)
 	chunk.visible = true
 	_next_z -= CHUNK_LENGTH
 	_active.append(chunk)
@@ -50,8 +50,18 @@ func _recycle(chunk: Node3D) -> void:
 	chunk.visible = false
 	_pool.append(chunk)
 
-func _build_chunk_visuals(chunk: Node3D) -> void:
-	var zone: Resource = GameState.current_zone
+func _zone_for_chunk_z(chunk_z: float) -> Resource:
+	var distance_at_chunk: float = -chunk_z
+	var zone_index: int = 0
+	for i in range(GameState.ZONE_THRESHOLDS.size() - 1, -1, -1):
+		if distance_at_chunk >= GameState.ZONE_THRESHOLDS[i]:
+			zone_index = i
+			break
+	var safe_idx: int = mini(zone_index, GameState.ZONES.size() - 1)
+	return GameState.ZONES[safe_idx]
+
+func _build_chunk_visuals(chunk: Node3D, chunk_z: float) -> void:
+	var zone: Resource = _zone_for_chunk_z(chunk_z)
 	var path_width: float = zone.path_width if zone != null else 3.6
 	var path_color: Color = zone.path_color if zone != null else Color(0.4, 0.3, 0.2)
 	var stripe_color: Color = zone.stripe_color if zone != null else Color(0.85, 0.78, 0.55)

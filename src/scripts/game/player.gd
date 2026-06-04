@@ -89,3 +89,9 @@ func reset_lane_for_current_zone(animate: bool = false) -> void:
 		_lane_tween.tween_property(self, "position:x", target_x, ZONE_TRANSITION_TWEEN_DURATION)
 	else:
 		position.x = target_x
+
+func try_lane_left() -> void:
+	_try_lane_switch(-1)
+
+func try_lane_right() -> void:
+	_try_lane_switch(1)

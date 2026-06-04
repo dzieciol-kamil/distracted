@@ -15,6 +15,8 @@ func _ready() -> void:
 	_player.collided_with_hazard.connect(_on_player_collided)
 	_hud.stop_hold_started.connect(_on_ui_stop_hold_started)
 	_hud.stop_hold_released.connect(_on_ui_stop_hold_released)
+	_hud.lane_left_requested.connect(_on_ui_lane_left_requested)
+	_hud.lane_right_requested.connect(_on_ui_lane_right_requested)
 	GameState.zone_changed.connect(_on_zone_changed)
 	_player.reset_lane_for_current_zone()
 
@@ -33,3 +35,9 @@ func _on_player_collided() -> void:
 
 func _on_zone_changed(_new_zone: GameState.ZoneIndex) -> void:
 	_player.reset_lane_for_current_zone(true)
+
+func _on_ui_lane_left_requested() -> void:
+	_player.try_lane_left()
+
+func _on_ui_lane_right_requested() -> void:
+	_player.try_lane_right()

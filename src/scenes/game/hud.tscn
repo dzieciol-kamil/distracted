@@ -50,3 +50,19 @@ offset_right = 295.0
 offset_bottom = 820.0
 text = "STOP"
 theme_override_font_sizes/font_size = 32
+
+[node name="LeftArrowButton" type="Button" parent="."]
+offset_left = 5.0
+offset_top = 740.0
+offset_right = 85.0
+offset_bottom = 820.0
+text = "◀"
+theme_override_font_sizes/font_size = 32
+
+[node name="RightArrowButton" type="Button" parent="."]
+offset_left = 305.0
+offset_top = 740.0
+offset_right = 385.0
+offset_bottom = 820.0
+text = "▶"
+theme_override_font_sizes/font_size = 32

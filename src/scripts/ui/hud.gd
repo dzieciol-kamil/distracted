@@ -4,8 +4,8 @@ signal stop_hold_started
 signal stop_hold_released
 
 @onready var _distance_label: Label = $DistanceLabel
-@onready var _notification_area: Control = $NotificationArea
-@onready var _notification_icon: Button = $NotificationArea/NotificationIcon
+@onready var _notification_area: Button = $NotificationArea
+@onready var _notification_icon: Label = $NotificationArea/NotificationIcon
 @onready var _willpower_bar: ProgressBar = $NotificationArea/WillpowerBar
 @onready var _stop_button: Button = $StopButton
 
@@ -14,7 +14,7 @@ func _ready() -> void:
 	NotificationManager.notification_arrived.connect(_on_notification_arrived)
 	NotificationManager.phone_dismissed.connect(_on_phone_dismissed)
 	NotificationManager.phone_opened.connect(_on_phone_opened)
-	_notification_icon.pressed.connect(_on_notification_icon_pressed)
+	_notification_area.pressed.connect(_on_notification_area_pressed)
 	_stop_button.button_down.connect(_on_stop_button_down)
 	_stop_button.button_up.connect(_on_stop_button_up)
 
@@ -37,7 +37,7 @@ func _on_phone_opened(_voluntary: bool) -> void:
 func _on_phone_dismissed() -> void:
 	_notification_area.visible = false
 
-func _on_notification_icon_pressed() -> void:
+func _on_notification_area_pressed() -> void:
 	NotificationManager.request_check_phone()
 
 func _on_stop_button_down() -> void:

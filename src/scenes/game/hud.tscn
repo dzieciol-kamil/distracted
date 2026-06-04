@@ -13,19 +13,23 @@ offset_bottom = 48.0
 text = "0 m"
 theme_override_font_sizes/font_size = 24
 
-[node name="NotificationArea" type="Control" parent="."]
+[node name="NotificationArea" type="Button" parent="."]
 visible = false
+flat = true
+focus_mode = 0
 offset_left = 16.0
 offset_top = 64.0
 offset_right = 374.0
 offset_bottom = 112.0
 
-[node name="NotificationIcon" type="Button" parent="NotificationArea"]
+[node name="NotificationIcon" type="Label" parent="NotificationArea"]
 offset_left = 0.0
 offset_top = 0.0
 offset_right = 48.0
 offset_bottom = 48.0
 text = "!"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="WillpowerBar" type="ProgressBar" parent="NotificationArea"]
 offset_left = 56.0

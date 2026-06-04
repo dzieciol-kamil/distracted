@@ -45,7 +45,7 @@ func _spawn_hazard() -> void:
 	if entry.is_lane_obstacle:
 		var lane_count: int = GameState.current_zone.lane_count
 		var lane_x: float = _lane_x_for_spawn(lane_count)
-		hazard.position = Vector3(lane_x, 0.5, _player.global_position.z - lookahead)
+		hazard.position = Vector3(lane_x, 0.0, _player.global_position.z - lookahead)
 	else:
 		var spawn_side: float = 1.0 if randf() < 0.5 else -1.0
 		var path_half_width: float = GameState.current_zone.path_width / 2.0

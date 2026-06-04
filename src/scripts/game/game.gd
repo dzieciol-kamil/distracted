@@ -15,6 +15,8 @@ func _ready() -> void:
 	_player.collided_with_hazard.connect(_on_player_collided)
 	_hud.stop_hold_started.connect(_on_ui_stop_hold_started)
 	_hud.stop_hold_released.connect(_on_ui_stop_hold_released)
+	GameState.zone_changed.connect(_on_zone_changed)
+	_player.reset_lane_for_current_zone()
 
 func _on_ui_stop_hold_started() -> void:
 	_player.set_stopped()
@@ -28,3 +30,6 @@ func _on_player_collided() -> void:
 	GameState.set_phase(GameState.GamePhase.GAME_OVER)
 	await get_tree().create_timer(1.5).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/game_over.tscn")
+
+func _on_zone_changed(_new_zone: GameState.ZoneIndex) -> void:
+	_player.reset_lane_for_current_zone(true)

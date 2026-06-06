@@ -7,6 +7,7 @@ const _SKIN_TEXTURE := preload("res://art/kenney_animated-characters-protagonist
 
 const _ANIM_IDLE: StringName = &"idle/Root|Idle"
 const _ANIM_RUN: StringName = &"run/Root|Run"
+const _ANIM_REST: StringName = &"idle/Root|0_Targeting Pose"
 
 var _anim_player: AnimationPlayer
 var _current_anim: StringName = &""
@@ -28,6 +29,8 @@ func _ready() -> void:
 	_load_anim_library(_IDLE_SCENE, &"idle")
 	_load_anim_library(_RUN_SCENE, &"run")
 
+	if _anim_player.has_animation(_ANIM_REST):
+		_anim_player.play(_ANIM_REST)
 	_update_animation()
 
 func _process(_delta: float) -> void:

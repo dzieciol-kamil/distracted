@@ -18,6 +18,7 @@ func _ready() -> void:
 	_direction = -signf(position.x)
 	if _direction == 0.0:
 		_direction = 1.0
+	_orient_model()
 
 func _process(delta: float) -> void:
 	position.x += lateral_speed * _direction * delta
@@ -31,6 +32,13 @@ func _process(delta: float) -> void:
 			cleared.emit(self)
 	if absf(position.x) > path_half_width + 2.0:
 		queue_free()
+
+func _orient_model() -> void:
+	var model: Node3D = get_node_or_null("Model") as Node3D
+	if model == null:
+		return
+	if _direction < 0.0:
+		model.rotation_degrees.y += 180.0
 
 func _on_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player"):

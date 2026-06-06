@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cnoikey73bnth" path="res://assets/hazards/train-locomotive.glb" id="2_model"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(2.0, 3.0, 2.0)
+size = Vector3(6.0, 3.0, 2.0)
 
 [node name="TrainCrossing" type="Area3D"]
 script = ExtResource("1_script")

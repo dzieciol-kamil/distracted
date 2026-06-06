@@ -2,7 +2,9 @@ extends Node
 
 const ZONE_VILLAGE: Resource = preload("res://resources/zones/zone_village.tres")
 const ZONE_SUBURB: Resource = preload("res://resources/zones/zone_suburb.tres")
-const ZONES: Array[Resource] = [ZONE_VILLAGE, ZONE_SUBURB]
+const ZONE_TOWN: Resource = preload("res://resources/zones/zone_town.tres")
+const ZONE_CITY: Resource = preload("res://resources/zones/zone_city.tres")
+const ZONES: Array[Resource] = [ZONE_VILLAGE, ZONE_SUBURB, ZONE_TOWN, ZONE_CITY]
 
 enum GamePhase { ROAD, PHONE, GAME_OVER }
 enum ZoneIndex { VILLAGE, SUBURB, TOWN, CITY }

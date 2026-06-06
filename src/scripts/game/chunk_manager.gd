@@ -109,12 +109,15 @@ func _build_road(chunk: Node3D, zone: Resource, chunk_z: float) -> void:
 	if tile_scene == null:
 		_build_road_fallback(chunk, zone)
 		return
-	var rotation_y: float = deg_to_rad(zone.road_tile_rotation_y)
+	var distance: float = -chunk_z
+	var using_tile_2: bool = zone.road_tile_2 != null and zone.road_tile_2_from > 0.0 and distance >= zone.road_tile_2_from
+	var rot_deg: float = zone.road_tile_2_rotation_y if using_tile_2 else zone.road_tile_rotation_y
+	var rotation_y: float = deg_to_rad(rot_deg)
 	var tile_size: float = _get_tile_size(tile_scene, rotation_y)
 	var tile_count: int = max(1, int(ceil(CHUNK_LENGTH / tile_size)))
 	for i in tile_count:
 		var tile: Node3D = tile_scene.instantiate() as Node3D
-		tile.position.z = -(i * tile_size + tile_size * 0.5)
+		tile.position = Vector3(0.0, 0.01, -(i * tile_size + tile_size * 0.5))
 		tile.rotation.y = rotation_y
 		chunk.add_child(tile)
 

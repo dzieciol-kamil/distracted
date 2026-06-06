@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Zone" load_steps=15 format=3]
+[gd_resource type="Resource" script_class="Zone" load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://resources/zone.gd" id="1_zone"]
 [ext_resource type="Script" path="res://resources/hazard_entry.gd" id="2_entry"]
@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://resources/hazards/hazard_samochod.tres" id="4_samochod"]
 [ext_resource type="Resource" path="res://resources/hazards/hazard_latarnia.tres" id="5_latarnia"]
 [ext_resource type="Resource" path="res://resources/hazards/hazard_skrzynka.tres" id="6_skrzynka"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_pociag.tres" id="16_pociag"]
 [ext_resource type="PackedScene" uid="uid://cafrv0sv0x706" path="res://assets/road/town_city/road-straight.glb" id="7_road_tile"]
 [ext_resource type="PackedScene" uid="uid://becqemcrlhltv" path="res://assets/environment/city/building-a.glb" id="8_bldg_a"]
 [ext_resource type="PackedScene" uid="uid://da8fay0spixo7" path="res://assets/environment/city/building-b.glb" id="9_bldg_b"]
@@ -23,7 +24,7 @@ walk_speed = 18.0
 willpower_max = 1.5
 spawn_interval_min = 5.0
 spawn_interval_max = 10.0
-hazard_pool = Array[ExtResource("2_entry")]([ExtResource("3_ciezarowka"), ExtResource("4_samochod"), ExtResource("5_latarnia"), ExtResource("6_skrzynka")])
+hazard_pool = Array[ExtResource("2_entry")]([ExtResource("3_ciezarowka"), ExtResource("4_samochod"), ExtResource("5_latarnia"), ExtResource("6_skrzynka"), ExtResource("16_pociag")])
 lane_count = 3
 path_width = 7.2
 path_color = Color(0.3, 0.3, 0.35, 1)

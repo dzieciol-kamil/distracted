@@ -114,7 +114,7 @@ func _build_road(chunk: Node3D, zone: Resource, chunk_z: float) -> void:
 	var tile_count: int = max(1, int(ceil(CHUNK_LENGTH / tile_size)))
 	for i in tile_count:
 		var tile: Node3D = tile_scene.instantiate() as Node3D
-		tile.position.z = -(i * tile_size + tile_size * 0.5)
+		tile.position = Vector3(0.0, 0.01, -(i * tile_size + tile_size * 0.5))
 		tile.rotation.y = rotation_y
 		chunk.add_child(tile)
 

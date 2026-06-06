@@ -73,6 +73,34 @@ godot --path /Users/kamil/Projects/distracted/src/ --headless --quit 2>&1
 ```
 Zero ERRORów = ok. Warningi są akceptowalne jeśli celowe.
 
+## Spec i plan — TYLKO w GitHub Issues (nie w plikach lokalnych)
+
+GH Issue jest jedynym źródłem prawdy. **Nigdy** nie twórz lokalnych plików spec/plan.
+
+**Spec** (po brainstormingu) → body issue:
+```bash
+gh issue edit <nr> --repo dzieciol-kamil/distracted --body "$(cat <<'EOF'
+## Spec
+...
+EOF
+)"
+```
+
+**Plan** (po writing-plans) → komentarz do issue:
+```bash
+gh issue comment <nr> --repo dzieciol-kamil/distracted --body "$(cat <<'EOF'
+...treść planu...
+EOF
+)"
+```
+
+Przed writing-plans zawsze pobierz spec z issue:
+```bash
+gh issue view <nr> --repo dzieciol-kamil/distracted
+```
+
+Pełny flow: `brainstorming → spec w body issue → /clear → writing-plans → plan jako komentarz → /clear → executing-plans`
+
 ## Zasady pracy
 - Dokumentacja po polsku (rozmowy z właścicielem), kod i komentarze po angielsku
 - Przed kodowaniem — zawsze doprecyzuj wymagania w `./doc/`

@@ -18,6 +18,7 @@ script = ExtResource("1_game")
 [node name="HazardContainer" type="Node3D" parent="WorldContainer"]
 
 [node name="Player" parent="." instance=ExtResource("5_player")]
+position = Vector3(0, 0, 2)
 
 [node name="GameCamera" type="Camera3D" parent="."]
 script = ExtResource("2_cam")

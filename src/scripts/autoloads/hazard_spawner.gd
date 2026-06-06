@@ -50,7 +50,7 @@ func _spawn_hazard() -> void:
 		var spawn_side: float = 1.0 if randf() < 0.5 else -1.0
 		var path_half_width: float = GameState.current_zone.path_width / 2.0
 		var spawn_x: float = (path_half_width + SPAWN_X_BUFFER) * spawn_side
-		hazard.position = Vector3(spawn_x, 0.75, _player.global_position.z - lookahead)
+		hazard.position = Vector3(spawn_x, 0.0, _player.global_position.z - lookahead)
 
 	_container.add_child(hazard)
 	hazard.cleared.connect(_on_hazard_cleared)

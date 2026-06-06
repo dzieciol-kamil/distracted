@@ -37,7 +37,8 @@ func _spawn_chunk() -> void:
 		return
 	var chunk: Node3D = _pool.pop_back()
 	for child in chunk.get_children():
-		child.queue_free()
+		chunk.remove_child(child)
+		child.free()
 	chunk.position.z = _next_z
 	_build_chunk_visuals(chunk, _next_z)
 	chunk.visible = true
@@ -64,25 +65,30 @@ func _get_tile_size(scene: PackedScene) -> float:
 	if _tile_size_cache.has(key):
 		return _tile_size_cache[key]
 	var temp: Node3D = scene.instantiate() as Node3D
+	temp.visible = false
 	add_child(temp)
-	var aabb: AABB = AABB()
-	_collect_aabb(temp, aabb)
-	temp.queue_free()
+	var aabb: AABB = _collect_aabb(temp)
+	remove_child(temp)
+	temp.free()
 	var size: float = aabb.size.z if aabb.size.z > 0.01 else 2.0
 	_tile_size_cache[key] = size
 	return size
 
-func _collect_aabb(node: Node3D, aabb: AABB) -> void:
+func _collect_aabb(node: Node3D) -> AABB:
+	var result: AABB = AABB()
 	if node is MeshInstance3D:
-		var mesh_aabb: AABB = (node as MeshInstance3D).get_aabb()
-		if aabb.size == Vector3.ZERO:
-			aabb.position = mesh_aabb.position
-			aabb.size = mesh_aabb.size
-		else:
-			aabb = aabb.merge(mesh_aabb)
+		var local_aabb: AABB = (node as MeshInstance3D).get_aabb()
+		var world_aabb: AABB = node.global_transform * local_aabb
+		result = world_aabb
 	for child in node.get_children():
 		if child is Node3D:
-			_collect_aabb(child as Node3D, aabb)
+			var child_aabb: AABB = _collect_aabb(child as Node3D)
+			if child_aabb.size != Vector3.ZERO:
+				if result.size == Vector3.ZERO:
+					result = child_aabb
+				else:
+					result = result.merge(child_aabb)
+	return result
 
 func _build_chunk_visuals(chunk: Node3D, chunk_z: float) -> void:
 	var zone: Resource = _zone_for_chunk_z(chunk_z)
@@ -92,27 +98,24 @@ func _build_chunk_visuals(chunk: Node3D, chunk_z: float) -> void:
 	_build_props(chunk, zone)
 
 func _build_road(chunk: Node3D, zone: Resource) -> void:
-	var road_tile: PackedScene = zone.road_tile if zone.road_tile != null else null
-	if road_tile == null:
+	if zone.road_tile == null:
 		_build_road_fallback(chunk, zone)
 		return
-	var tile_size: float = _get_tile_size(road_tile)
+	var tile_size: float = _get_tile_size(zone.road_tile)
 	var tile_count: int = max(1, int(ceil(CHUNK_LENGTH / tile_size)))
 	for i in tile_count:
-		var tile: Node3D = road_tile.instantiate() as Node3D
+		var tile: Node3D = zone.road_tile.instantiate() as Node3D
 		tile.position.z = -(i * tile_size + tile_size * 0.5)
 		chunk.add_child(tile)
 
 func _build_road_fallback(chunk: Node3D, zone: Resource) -> void:
-	var path_width: float = zone.path_width if zone != null else 3.6
-	var path_color: Color = zone.path_color if zone != null else Color(0.4, 0.3, 0.2)
 	var path_mesh: MeshInstance3D = MeshInstance3D.new()
 	var path_box: BoxMesh = BoxMesh.new()
-	path_box.size = Vector3(path_width, 0.1, CHUNK_LENGTH)
+	path_box.size = Vector3(zone.path_width, 0.1, CHUNK_LENGTH)
 	path_mesh.mesh = path_box
 	path_mesh.position = Vector3(0, -0.05, -CHUNK_LENGTH / 2.0)
 	var path_material: StandardMaterial3D = StandardMaterial3D.new()
-	path_material.albedo_color = path_color
+	path_material.albedo_color = zone.path_color
 	path_mesh.material_override = path_material
 	chunk.add_child(path_mesh)
 

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/hazards/tractor.glb" id="2_model"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(2.0, 2.5, 4.0)
+size = Vector3(4.0, 5.0, 8.0)
 
 [node name="Tractor" type="Area3D"]
 script = ExtResource("1_hazard")
@@ -13,8 +13,9 @@ collision_layer = 4
 collision_mask = 2
 
 [node name="Model" parent="." instance=ExtResource("2_model")]
-rotation_degrees = Vector3(0, 90, 0)
+rotation_degrees = Vector3(0, 270, 0)
+scale = Vector3(2, 2, 2)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 shape = SubResource("BoxShape3D_1")

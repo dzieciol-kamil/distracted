@@ -30,7 +30,7 @@ func _process(delta: float) -> void:
 		if past_far_edge:
 			_emitted_cleared = true
 			cleared.emit(self)
-	if absf(position.x) > path_half_width + 2.0:
+	if absf(position.x) > path_half_width + 10.0:
 		queue_free()
 
 func _orient_model() -> void:

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Zone" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="Zone" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://resources/zone.gd" id="1_zone"]
 [ext_resource type="Script" path="res://resources/hazard_entry.gd" id="2_entry"]
@@ -6,11 +6,12 @@
 [ext_resource type="Resource" path="res://resources/hazards/hazard_pies.tres" id="4_pies"]
 [ext_resource type="Resource" path="res://resources/hazards/hazard_krowa.tres" id="5_krowa"]
 [ext_resource type="PackedScene" uid="uid://dvrbkthjmj2bp" path="res://assets/road/village/road-dirt-straight.glb" id="6_road_tile"]
-[ext_resource type="PackedScene" uid="uid://d3nh6vmi48i4j" path="res://assets/environment/village/tree-large.glb" id="7_tree_large"]
-[ext_resource type="PackedScene" uid="uid://d1bv16oxcskou" path="res://assets/environment/village/tree-small.glb" id="8_tree_small"]
-[ext_resource type="PackedScene" uid="uid://beryp56sv6t17" path="res://assets/environment/village/tree-pine-large.glb" id="9_tree_pine_large"]
-[ext_resource type="PackedScene" uid="uid://du2kdnkjny318" path="res://assets/environment/village/tree-pine-small.glb" id="10_tree_pine_small"]
-[ext_resource type="PackedScene" uid="uid://bat5yn2x18v8s" path="res://assets/environment/village/tree-shrub.glb" id="11_tree_shrub"]
+[ext_resource type="PackedScene" uid="uid://52thtvqjlj2s" path="res://assets/road/village_paved/road-asphalt-pavement.glb" id="7_road_tile_2"]
+[ext_resource type="PackedScene" uid="uid://d3nh6vmi48i4j" path="res://assets/environment/village/tree-large.glb" id="8_tree_large"]
+[ext_resource type="PackedScene" uid="uid://d1bv16oxcskou" path="res://assets/environment/village/tree-small.glb" id="9_tree_small"]
+[ext_resource type="PackedScene" uid="uid://beryp56sv6t17" path="res://assets/environment/village/tree-pine-large.glb" id="10_tree_pine_large"]
+[ext_resource type="PackedScene" uid="uid://du2kdnkjny318" path="res://assets/environment/village/tree-pine-small.glb" id="11_tree_pine_small"]
+[ext_resource type="PackedScene" uid="uid://bat5yn2x18v8s" path="res://assets/environment/village/tree-shrub.glb" id="12_tree_shrub"]
 
 [resource]
 script = ExtResource("1_zone")
@@ -26,5 +27,9 @@ path_color = Color(0.4, 0.3, 0.2, 1)
 stripe_color = Color(0.85, 0.78, 0.55, 1)
 stripe_orientation = 0
 road_tile = ExtResource("6_road_tile")
-prop_pool = Array[PackedScene]([ExtResource("7_tree_large"), ExtResource("8_tree_small"), ExtResource("9_tree_pine_large"), ExtResource("10_tree_pine_small"), ExtResource("11_tree_shrub")])
+road_tile_rotation_y = 90.0
+road_tile_2 = ExtResource("7_road_tile_2")
+road_tile_2_from = 300.0
+prop_pool = Array[PackedScene]([ExtResource("8_tree_large"), ExtResource("9_tree_small"), ExtResource("10_tree_pine_large"), ExtResource("11_tree_pine_small"), ExtResource("12_tree_shrub")])
 prop_density = 6.0
+prop_scale = 4.0

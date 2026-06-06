@@ -94,18 +94,27 @@ func _build_chunk_visuals(chunk: Node3D, chunk_z: float) -> void:
 	var zone: Resource = _zone_for_chunk_z(chunk_z)
 	if zone == null:
 		return
-	_build_road(chunk, zone)
+	_build_road(chunk, zone, chunk_z)
 	_build_props(chunk, zone)
 
-func _build_road(chunk: Node3D, zone: Resource) -> void:
-	if zone.road_tile == null:
+func _pick_road_tile(zone: Resource, chunk_z: float) -> PackedScene:
+	var distance: float = -chunk_z
+	if zone.road_tile_2 != null and zone.road_tile_2_from > 0.0 and distance >= zone.road_tile_2_from:
+		return zone.road_tile_2
+	return zone.road_tile
+
+func _build_road(chunk: Node3D, zone: Resource, chunk_z: float) -> void:
+	var tile_scene: PackedScene = _pick_road_tile(zone, chunk_z)
+	if tile_scene == null:
 		_build_road_fallback(chunk, zone)
 		return
-	var tile_size: float = _get_tile_size(zone.road_tile)
+	var rotation_y: float = deg_to_rad(zone.road_tile_rotation_y)
+	var tile_size: float = _get_tile_size(tile_scene)
 	var tile_count: int = max(1, int(ceil(CHUNK_LENGTH / tile_size)))
 	for i in tile_count:
-		var tile: Node3D = zone.road_tile.instantiate() as Node3D
+		var tile: Node3D = tile_scene.instantiate() as Node3D
 		tile.position.z = -(i * tile_size + tile_size * 0.5)
+		tile.rotation.y = rotation_y
 		chunk.add_child(tile)
 
 func _build_road_fallback(chunk: Node3D, zone: Resource) -> void:
@@ -127,13 +136,14 @@ func _build_props(chunk: Node3D, zone: Resource) -> void:
 	while z > -CHUNK_LENGTH:
 		var prop_scene: PackedScene = zone.prop_pool[randi() % zone.prop_pool.size()]
 		if prop_scene != null:
-			_place_prop(chunk, prop_scene, road_edge, z, -1.0)
-			_place_prop(chunk, prop_scene, road_edge, z, 1.0)
+			_place_prop(chunk, prop_scene, road_edge, z, -1.0, zone.prop_scale)
+			_place_prop(chunk, prop_scene, road_edge, z, 1.0, zone.prop_scale)
 		z -= zone.prop_density
 
-func _place_prop(chunk: Node3D, scene: PackedScene, road_edge: float, z: float, side: float) -> void:
+func _place_prop(chunk: Node3D, scene: PackedScene, road_edge: float, z: float, side: float, scale: float) -> void:
 	var prop: Node3D = scene.instantiate() as Node3D
 	var x_offset: float = road_edge + PROP_MARGIN + randf() * PROP_SPREAD
 	prop.position = Vector3(side * x_offset, 0.0, z)
 	prop.rotation.y = float(randi() % 4) * PI * 0.5
+	prop.scale = Vector3.ONE * scale
 	chunk.add_child(prop)

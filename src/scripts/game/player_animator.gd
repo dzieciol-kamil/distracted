@@ -76,5 +76,5 @@ func _update_animation() -> void:
 	if target == _current_anim:
 		return
 	if _anim_player.has_animation(target):
-		_anim_player.play(target)
+		_anim_player.play(target, 0.2)
 		_current_anim = target

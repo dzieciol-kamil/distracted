@@ -1,20 +1,33 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/hazards/train_crossing.gd" id="1_script"]
-[ext_resource type="PackedScene" uid="uid://cnoikey73bnth" path="res://assets/hazards/train-locomotive.glb" id="2_model"]
+[ext_resource type="PackedScene" uid="uid://cnoikey73bnth" path="res://assets/hazards/train-locomotive.glb" id="2_loco"]
+[ext_resource type="PackedScene" uid="uid://d3trpjoh3fbl5" path="res://assets/hazards/train-carriage.glb" id="3_carriage"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(6.0, 3.0, 2.0)
+size = Vector3(26.0, 4.0, 2.0)
 
 [node name="TrainCrossing" type="Area3D"]
 script = ExtResource("1_script")
 collision_layer = 4
 collision_mask = 2
 
-[node name="Model" parent="." instance=ExtResource("2_model")]
+[node name="Model" parent="." instance=ExtResource("2_loco")]
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2, 2, 2)
+
+[node name="Carriage1" parent="." instance=ExtResource("3_carriage")]
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2, 2, 2)
+
+[node name="Carriage2" parent="." instance=ExtResource("3_carriage")]
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2, 2, 2)
+
+[node name="Carriage3" parent="." instance=ExtResource("3_carriage")]
 rotation_degrees = Vector3(0, 90, 0)
 scale = Vector3(2, 2, 2)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
 shape = SubResource("BoxShape3D_1")

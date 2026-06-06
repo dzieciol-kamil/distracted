@@ -7,5 +7,5 @@
 script = ExtResource("1_entry")
 scene = ExtResource("2_scene")
 weight = 2
-spawn_lookahead_min = 25.0
-spawn_lookahead_max = 35.0
+spawn_lookahead_min = 18.0
+spawn_lookahead_max = 22.0

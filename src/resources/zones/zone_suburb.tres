@@ -33,3 +33,4 @@ stripe_orientation = 1
 road_tile = ExtResource("9_road_tile")
 prop_pool = Array[PackedScene]([ExtResource("10_bldg_a"), ExtResource("11_bldg_b"), ExtResource("12_bldg_c"), ExtResource("13_bldg_d"), ExtResource("14_bldg_e"), ExtResource("15_tree_large"), ExtResource("16_tree_small")])
 prop_density = 8.0
+prop_scale = 4.0

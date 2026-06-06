@@ -17,6 +17,7 @@ extends Resource
 @export var road_tile: PackedScene
 @export var road_tile_rotation_y: float = 0.0
 @export var road_tile_2: PackedScene
+@export var road_tile_2_rotation_y: float = 0.0
 @export var road_tile_2_from: float = 0.0
 @export var prop_pool: Array[PackedScene] = []
 @export var prop_density: float = 5.0

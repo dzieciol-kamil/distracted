@@ -18,6 +18,7 @@ func _ready() -> void:
 	var character: Node3D = _CHAR_SCENE.instantiate()
 	character.name = "characterMedium"
 	character.rotation.y = PI
+	character.scale = Vector3(0.7, 0.7, 0.7)
 	add_child(character)
 	_apply_skin(character)
 

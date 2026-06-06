@@ -12,7 +12,7 @@ const PROP_SPREAD: float = 5.0
 var _pool: Array[Node3D] = []
 var _active: Array[Node3D] = []
 var _next_z: float = 0.0
-var _tile_size_cache: Dictionary = {}
+var _tile_size_cache: Dictionary = {}  # key: "instanceId_rotDeg"
 
 func _ready() -> void:
 	for i in POOL_SIZE:
@@ -60,11 +60,12 @@ func _zone_for_chunk_z(chunk_z: float) -> Resource:
 	var safe_idx: int = mini(zone_index, GameState.ZONES.size() - 1)
 	return GameState.ZONES[safe_idx]
 
-func _get_tile_size(scene: PackedScene) -> float:
-	var key: int = scene.get_instance_id()
+func _get_tile_size(scene: PackedScene, rotation_y: float) -> float:
+	var key: String = "%d_%.0f" % [scene.get_instance_id(), rad_to_deg(rotation_y)]
 	if _tile_size_cache.has(key):
 		return _tile_size_cache[key]
 	var temp: Node3D = scene.instantiate() as Node3D
+	temp.rotation.y = rotation_y
 	temp.visible = false
 	add_child(temp)
 	var aabb: AABB = _collect_aabb(temp)
@@ -109,7 +110,7 @@ func _build_road(chunk: Node3D, zone: Resource, chunk_z: float) -> void:
 		_build_road_fallback(chunk, zone)
 		return
 	var rotation_y: float = deg_to_rad(zone.road_tile_rotation_y)
-	var tile_size: float = _get_tile_size(tile_scene)
+	var tile_size: float = _get_tile_size(tile_scene, rotation_y)
 	var tile_count: int = max(1, int(ceil(CHUNK_LENGTH / tile_size)))
 	for i in tile_count:
 		var tile: Node3D = tile_scene.instantiate() as Node3D

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="Zone" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://resources/zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://resources/hazard_entry.gd" id="2_entry"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_ciezarowka.tres" id="3_ciezarowka"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_samochod.tres" id="4_samochod"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_latarnia.tres" id="5_latarnia"]
+[ext_resource type="Resource" path="res://resources/hazards/hazard_skrzynka.tres" id="6_skrzynka"]
+[ext_resource type="PackedScene" uid="uid://cafrv0sv0x706" path="res://assets/road/town_city/road-straight.glb" id="7_road_tile"]
+[ext_resource type="PackedScene" uid="uid://grhylb3ippjb" path="res://assets/environment/town/building-a.glb" id="8_bldg_a"]
+[ext_resource type="PackedScene" uid="uid://cb0p46yhn7ali" path="res://assets/environment/town/building-b.glb" id="9_bldg_b"]
+[ext_resource type="PackedScene" uid="uid://dqb52a85j1dsq" path="res://assets/environment/town/building-c.glb" id="10_bldg_c"]
+[ext_resource type="PackedScene" uid="uid://dt37fiuc46g4m" path="res://assets/environment/town/building-d.glb" id="11_bldg_d"]
+[ext_resource type="PackedScene" uid="uid://c024fgbrti4ns" path="res://assets/environment/town/building-e.glb" id="12_bldg_e"]
+
+[resource]
+script = ExtResource("1_zone")
+name_id = "town"
+walk_speed = 13.0
+willpower_max = 2.0
+spawn_interval_min = 10.0
+spawn_interval_max = 20.0
+hazard_pool = Array[ExtResource("2_entry")]([ExtResource("3_ciezarowka"), ExtResource("4_samochod"), ExtResource("5_latarnia"), ExtResource("6_skrzynka")])
+lane_count = 3
+path_width = 6.0
+path_color = Color(0.35, 0.35, 0.4, 1)
+stripe_color = Color(1, 1, 1, 1)
+stripe_orientation = 1
+road_tile = ExtResource("7_road_tile")
+prop_pool = Array[PackedScene]([ExtResource("8_bldg_a"), ExtResource("9_bldg_b"), ExtResource("10_bldg_c"), ExtResource("11_bldg_d"), ExtResource("12_bldg_e")])
+prop_density = 7.0

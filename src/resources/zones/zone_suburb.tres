@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Zone" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="Zone" load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://resources/zone.gd" id="1_zone"]
 [ext_resource type="Script" path="res://resources/hazard_entry.gd" id="2_entry"]
@@ -8,6 +8,14 @@
 [ext_resource type="Resource" path="res://resources/hazards/hazard_kaluza.tres" id="6_kaluza"]
 [ext_resource type="Resource" path="res://resources/hazards/hazard_latarnia.tres" id="7_latarnia"]
 [ext_resource type="Resource" path="res://resources/hazards/hazard_skrzynka.tres" id="8_skrzynka"]
+[ext_resource type="PackedScene" uid="uid://bjqfb41abewvy" path="res://assets/road/suburb/road-asphalt-straight.glb" id="9_road_tile"]
+[ext_resource type="PackedScene" uid="uid://3anp5mm1pm7x" path="res://assets/environment/suburb/building-type-a.glb" id="10_bldg_a"]
+[ext_resource type="PackedScene" uid="uid://4h5fi2u4lw4v" path="res://assets/environment/suburb/building-type-b.glb" id="11_bldg_b"]
+[ext_resource type="PackedScene" uid="uid://ccmbhkifwv1ue" path="res://assets/environment/suburb/building-type-c.glb" id="12_bldg_c"]
+[ext_resource type="PackedScene" uid="uid://c7q2asa8j33cg" path="res://assets/environment/suburb/building-type-d.glb" id="13_bldg_d"]
+[ext_resource type="PackedScene" uid="uid://d211w8y5g5q87" path="res://assets/environment/suburb/building-type-e.glb" id="14_bldg_e"]
+[ext_resource type="PackedScene" uid="uid://nr7y8k732g03" path="res://assets/environment/suburb/tree-large.glb" id="15_tree_large"]
+[ext_resource type="PackedScene" uid="uid://dan4iyjrl5ufd" path="res://assets/environment/suburb/tree-small.glb" id="16_tree_small"]
 
 [resource]
 script = ExtResource("1_zone")
@@ -22,3 +30,6 @@ path_width = 4.0
 path_color = Color(0.4, 0.4, 0.45, 1)
 stripe_color = Color(1, 1, 1, 1)
 stripe_orientation = 1
+road_tile = ExtResource("9_road_tile")
+prop_pool = Array[PackedScene]([ExtResource("10_bldg_a"), ExtResource("11_bldg_b"), ExtResource("12_bldg_c"), ExtResource("13_bldg_d"), ExtResource("14_bldg_e"), ExtResource("15_tree_large"), ExtResource("16_tree_small")])
+prop_density = 8.0

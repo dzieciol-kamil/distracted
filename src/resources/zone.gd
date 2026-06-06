@@ -13,3 +13,7 @@ extends Resource
 @export var path_color: Color = Color(0.4, 0.3, 0.2)
 @export var stripe_color: Color = Color(0.85, 0.78, 0.55)
 @export var stripe_orientation: int = 0
+
+@export var road_tile: PackedScene
+@export var prop_pool: Array[PackedScene] = []
+@export var prop_density: float = 5.0

@@ -25,6 +25,7 @@ var time_on_phone: float = 0.0
 var total_time: float = 0.0
 var score: int = 0
 var speed: float = 6.0
+var start_zone: ZoneIndex = ZoneIndex.VILLAGE
 
 func _ready() -> void:
 	reset_metrics()
@@ -38,13 +39,15 @@ func _process(delta: float) -> void:
 
 func reset_metrics() -> void:
 	phase = GamePhase.ROAD
-	zone = ZoneIndex.VILLAGE
-	distance = 0.0
+	zone = start_zone
+	distance = ZONE_THRESHOLDS[start_zone]
 	time_on_phone = 0.0
 	total_time = 0.0
-	score = 0
-	current_zone = ZONE_VILLAGE
+	score = int(distance)
+	var safe_idx: int = mini(start_zone, ZONES.size() - 1)
+	current_zone = ZONES[safe_idx]
 	speed = current_zone.walk_speed
+	start_zone = ZoneIndex.VILLAGE
 
 func set_phase(new_phase: GamePhase) -> void:
 	if phase == new_phase:

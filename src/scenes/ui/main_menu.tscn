@@ -33,3 +33,15 @@ custom_minimum_size = Vector2(0, 32)
 [node name="StartButton" type="Button" parent="VBox"]
 text = "Start"
 theme_override_font_sizes/font_size = 24
+
+[node name="StartSuburbButton" type="Button" parent="VBox"]
+text = "Start Suburb"
+theme_override_font_sizes/font_size = 20
+
+[node name="StartTownButton" type="Button" parent="VBox"]
+text = "Start Town"
+theme_override_font_sizes/font_size = 20
+
+[node name="StartCityButton" type="Button" parent="VBox"]
+text = "Start City"
+theme_override_font_sizes/font_size = 20

@@ -12,6 +12,7 @@ const PROP_SPREAD: float = 5.0
 var _pool: Array[Node3D] = []
 var _active: Array[Node3D] = []
 var _next_z: float = 0.0
+var _distance_offset: float = 0.0
 var _tile_size_cache: Dictionary = {}  # key: "instanceId_rotDeg"
 
 func _ready() -> void:
@@ -20,6 +21,10 @@ func _ready() -> void:
 		chunk.visible = false
 		add_child(chunk)
 		_pool.append(chunk)
+	call_deferred("_spawn_initial_chunks")
+
+func _spawn_initial_chunks() -> void:
+	_distance_offset = GameState.distance
 	for i in ACTIVE_CHUNKS:
 		_spawn_chunk()
 
@@ -51,7 +56,7 @@ func _recycle(chunk: Node3D) -> void:
 	_pool.append(chunk)
 
 func _zone_for_chunk_z(chunk_z: float) -> Resource:
-	var distance_at_chunk: float = -chunk_z
+	var distance_at_chunk: float = _distance_offset + (-chunk_z)
 	var zone_index: int = 0
 	for i in range(GameState.ZONE_THRESHOLDS.size() - 1, -1, -1):
 		if distance_at_chunk >= GameState.ZONE_THRESHOLDS[i]:

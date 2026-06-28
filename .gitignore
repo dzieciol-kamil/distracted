@@ -14,3 +14,6 @@ src/ios/
 # Logs
 *.log
 /tmp/
+
+# QA artifacts
+qa-artifacts/

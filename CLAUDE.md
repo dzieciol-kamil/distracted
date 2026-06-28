@@ -73,6 +73,29 @@ godot --path /Users/kamil/Projects/distracted/src/ --headless --quit 2>&1
 ```
 Zero ERRORów = ok. Warningi są akceptowalne jeśli celowe.
 
+## AI Visual QA
+
+Dla prac związanych z visual QA traktuj issue #22 jako źródło prawdy.
+
+Polecenia:
+
+    godot --path /Users/kamil/Projects/distracted/src/ --headless --quit 2>&1
+    godot --path /Users/kamil/Projects/distracted/src/ res://scenes/qa/visual_qa.tscn -- --qa-capture
+    godot --path /Users/kamil/Projects/distracted/src/ -- --qa-gameplay-smoke
+
+Wygenerowane screenshoty i logi trafiają do `qa-artifacts/` i nie są commitowane.
+
+PR-y opisuj najpierw językiem produktowym:
+- co widział gracz,
+- dlaczego to było problemem czytelności, feelingu albo fair play,
+- jaki efekt dla gracza ma mieć zmiana,
+- co AI przetestowało,
+- co nadal wymaga decyzji właściciela.
+
+Jeśli AI nie wie, czy coś jest błędem czy stylem, nie zmieniaj tego w kodzie. Załóż osobne issue ze screenshotem, kontekstem i proponowanym efektem dla gracza, a potem poczekaj na akceptację.
+
+Po decyzjach właściciela, które zmieniają zakres auto-poprawek, aktualizuj `docs/ai-visual-qa-guidelines.md`.
+
 ## Spec i plan — TYLKO w GitHub Issues (nie w plikach lokalnych)
 
 GH Issue jest jedynym źródłem prawdy. **Nigdy** nie twórz lokalnych plików spec/plan.

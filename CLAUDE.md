@@ -80,8 +80,8 @@ Dla prac związanych z visual QA traktuj issue #22 jako źródło prawdy.
 Polecenia:
 
     godot --path /Users/kamil/Projects/distracted/src/ --headless --quit 2>&1
-    godot --path /Users/kamil/Projects/distracted/src/ res://scenes/qa/visual_qa.tscn -- --qa-capture
-    godot --path /Users/kamil/Projects/distracted/src/ -- --qa-gameplay-smoke
+    godot --path /Users/kamil/Projects/distracted/src/ --scene res://scenes/qa/visual_qa.tscn --quit-after 180 -- --qa-capture
+    godot --path /Users/kamil/Projects/distracted/src/ --quit-after 300 -- --qa-gameplay-smoke
 
 Wygenerowane screenshoty i logi trafiają do `qa-artifacts/` i nie są commitowane.
 

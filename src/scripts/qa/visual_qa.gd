@@ -3,7 +3,7 @@ extends Node3D
 const ZONE_SPACING: float = 14.0
 const ROAD_TILE_COUNT: int = 4
 const PROP_MARGIN: float = 1.5
-const HAZARD_SPACING: float = 3.0
+const HAZARD_GRID_SPACING: float = 6.5
 const ARTIFACT_DIR: String = "res://../qa-artifacts/visual-qa"
 
 const HAZARD_PATHS: Array[String] = [
@@ -34,8 +34,8 @@ func get_capture_camera() -> Camera3D:
 
 func get_capture_presets() -> Array[Dictionary]:
 	return [
-		{"name": "zones", "position": Vector3(0, 15, 28), "rotation": Vector3(-50, 0, 0)},
-		{"name": "hazards", "position": Vector3(0, 8, -8), "rotation": Vector3(-35, 0, 0)},
+		{"name": "zones", "position": Vector3(0, 70, -6), "rotation": Vector3(-90, 0, 0), "orthographic_size": 96.0},
+		{"name": "hazards", "position": Vector3(0, 42, -86), "rotation": Vector3(-90, 0, 0), "orthographic_size": 44.0},
 		{"name": "ui_hud", "position": Vector3(0, 12, 18), "rotation": Vector3(-45, 0, 0), "ui_target": "hud"},
 		{"name": "ui_phone", "position": Vector3(0, 12, 18), "rotation": Vector3(-45, 0, 0), "ui_target": "phone"},
 	]
@@ -84,7 +84,7 @@ func _add_props(parent: Node3D, zone: Resource) -> void:
 func _build_hazard_lineup() -> void:
 	var root := Node3D.new()
 	root.name = "HazardLineup"
-	root.position = Vector3(0.0, 0.0, -18.0)
+	root.position = Vector3(0.0, 0.0, -80.0)
 	_boards.add_child(root)
 	for i in range(HAZARD_PATHS.size()):
 		var scene := load(HAZARD_PATHS[i]) as PackedScene
@@ -94,7 +94,9 @@ func _build_hazard_lineup() -> void:
 		var hazard := scene.instantiate() as Node3D
 		if hazard == null:
 			continue
-		hazard.position = Vector3((float(i) - 4.0) * HAZARD_SPACING, 0.0, 0.0)
+		var column := i % 3
+		var row := i / 3
+		hazard.position = Vector3((float(column) - 1.0) * HAZARD_GRID_SPACING, 0.0, -float(row) * HAZARD_GRID_SPACING)
 		_prepare_static_preview(hazard)
 		root.add_child(hazard)
 		_add_label(root, HAZARD_PATHS[i].get_file().get_basename(), hazard.position + Vector3(0.0, 0.05, 1.6))
@@ -188,5 +190,5 @@ func _capture_all() -> void:
 		push_error("QA capture script missing")
 		get_tree().quit(1)
 		return
-	await capture.capture_presets(get_viewport(), _camera, get_capture_presets(), ARTIFACT_DIR)
-	get_tree().quit()
+	var capture_ok: bool = await capture.capture_presets(get_viewport(), _camera, get_capture_presets(), ARTIFACT_DIR)
+	get_tree().quit(0 if capture_ok else 1)

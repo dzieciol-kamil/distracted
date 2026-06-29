@@ -1,6 +1,6 @@
 extends Node
 
-const ARTIFACT_DIR := "res://../qa-artifacts/gameplay-smoke"
+const DEFAULT_ARTIFACT_DIR := "res://../qa-artifacts/gameplay-smoke"
 const QA_ARGS := "--qa-gameplay-smoke"
 const PHONE_NOTIFICATION_PATH := "res://resources/notifications/mama_zjadles.tres"
 const PHONE_OPEN_TIMEOUT_SECONDS := 2.0
@@ -68,10 +68,17 @@ func _capture_named(name: String) -> bool:
 	if name == "03_phone_overlay":
 		preset["ui_target"] = "phone"
 	var presets: Array[Dictionary] = [preset]
-	var capture_ok: bool = await capture.capture_presets(get_viewport(), _camera, presets, ARTIFACT_DIR)
+	var capture_ok: bool = await capture.capture_presets(get_viewport(), _camera, presets, _get_artifact_dir())
 	if not capture_ok:
 		get_tree().quit(1)
 	return capture_ok
+
+func _get_artifact_dir() -> String:
+	var args := OS.get_cmdline_user_args()
+	var artifact_arg_index := args.find("--qa-artifact-dir")
+	if artifact_arg_index >= 0 and artifact_arg_index + 1 < args.size():
+		return args[artifact_arg_index + 1]
+	return DEFAULT_ARTIFACT_DIR
 
 func _open_phone_overlay_for_capture() -> bool:
 	var notification := load(PHONE_NOTIFICATION_PATH)

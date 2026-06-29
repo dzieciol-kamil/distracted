@@ -4,7 +4,7 @@ const ZONE_SPACING: float = 14.0
 const ROAD_TILE_COUNT: int = 4
 const PROP_MARGIN: float = 1.5
 const HAZARD_GRID_SPACING: float = 6.5
-const ARTIFACT_DIR: String = "res://../qa-artifacts/visual-qa"
+const DEFAULT_ARTIFACT_DIR: String = "res://../qa-artifacts/visual-qa"
 
 const HAZARD_PATHS: Array[String] = [
 	"res://scenes/hazards/tractor.tscn",
@@ -190,5 +190,12 @@ func _capture_all() -> void:
 		push_error("QA capture script missing")
 		get_tree().quit(1)
 		return
-	var capture_ok: bool = await capture.capture_presets(get_viewport(), _camera, get_capture_presets(), ARTIFACT_DIR)
+	var capture_ok: bool = await capture.capture_presets(get_viewport(), _camera, get_capture_presets(), _get_artifact_dir())
 	get_tree().quit(0 if capture_ok else 1)
+
+func _get_artifact_dir() -> String:
+	var args := OS.get_cmdline_user_args()
+	var artifact_arg_index := args.find("--qa-artifact-dir")
+	if artifact_arg_index >= 0 and artifact_arg_index + 1 < args.size():
+		return args[artifact_arg_index + 1]
+	return DEFAULT_ARTIFACT_DIR

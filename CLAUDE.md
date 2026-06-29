@@ -79,9 +79,15 @@ Dla prac związanych z visual QA traktuj issue #22 jako źródło prawdy.
 
 Polecenia:
 
-    godot --path /Users/kamil/Projects/distracted/src/ --headless --quit 2>&1
-    godot --path /Users/kamil/Projects/distracted/src/ --scene res://scenes/qa/visual_qa.tscn --quit-after 180 -- --qa-capture
-    godot --path /Users/kamil/Projects/distracted/src/ --quit-after 300 -- --qa-gameplay-smoke
+    python3 tools/qa/qa_runner.py --mode all
+
+Pojedyncze kroki:
+
+    python3 tools/qa/qa_runner.py --mode validate
+    python3 tools/qa/qa_runner.py --mode visual
+    python3 tools/qa/qa_runner.py --mode smoke
+
+Screenshotowe kroki `visual` i `smoke` wymagają dostępu do windowed renderer. W sandboxie macOS proces może zawisnąć przed startem projektu; uruchamiaj je poza sandboxem albo z dostępem do display.
 
 Wygenerowane screenshoty i logi trafiają do `qa-artifacts/` i nie są commitowane.
 

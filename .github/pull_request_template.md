@@ -19,11 +19,11 @@ Add screenshots from `qa-artifacts/` or describe the exact controlled frame when
 
 ## Auto-Fixed
 
-- 
+-
 
 ## Not Changed: Needs Owner Decision
 
-- 
+-
 
 ## Technical Notes
 

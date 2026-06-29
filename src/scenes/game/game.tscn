@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/game/game.gd" id="1_game"]
 [ext_resource type="Script" path="res://scripts/game/game_camera.gd" id="2_cam"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/game/chunk_manager.tscn" id="6_chunks"]
 [ext_resource type="Script" path="res://scripts/game/stop_controller.gd" id="7_stopctrl"]
 [ext_resource type="Script" path="res://scripts/game/environment_controller.gd" id="8_envctrl"]
+[ext_resource type="Script" path="res://scripts/qa/gameplay_smoke.gd" id="9_smoke"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 sky_top_color = Color(0.149, 0.478, 0.855, 1)
@@ -71,3 +72,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ground")
 
 [node name="EnvironmentController" type="Node" parent="."]
 script = ExtResource("8_envctrl")
+
+[node name="GameplaySmoke" type="Node" parent="."]
+script = ExtResource("9_smoke")

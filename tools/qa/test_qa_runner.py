@@ -1,3 +1,4 @@
+import re
 import tempfile
 import time
 import unittest
@@ -9,6 +10,22 @@ import qa_runner
 
 
 class QaRunnerTest(unittest.TestCase):
+    def test_visual_artifacts_match_visual_qa_capture_presets(self):
+        visual_qa_script = Path(__file__).resolve().parents[2] / "src" / "scripts" / "qa" / "visual_qa.gd"
+        preset_names = re.findall(r'"name": "([^"]+)"', visual_qa_script.read_text(encoding="utf-8"))
+
+        self.assertEqual(tuple(f"{name}.png" for name in preset_names), qa_runner.VISUAL_ARTIFACTS)
+
+    def test_visual_artifacts_include_reviewable_hazard_column_closeups(self):
+        self.assertTrue(
+            {
+                "hazards.png",
+                "hazards_column_1.png",
+                "hazards_column_2.png",
+                "hazards_column_3.png",
+            }.issubset(set(qa_runner.VISUAL_ARTIFACTS))
+        )
+
     def test_visual_command_uses_windowed_rendering_and_absolute_log(self):
         root = Path("/repo")
         command = qa_runner.build_command(root, "visual", "godot", "2026-06-29T10-30-00")

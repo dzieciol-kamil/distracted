@@ -3,7 +3,14 @@ extends Node3D
 const ZONE_SPACING: float = 14.0
 const ROAD_TILE_COUNT: int = 4
 const PROP_MARGIN: float = 1.5
-const HAZARD_GRID_SPACING: float = 6.5
+const HAZARD_GRID_SPACING: float = 12.0
+const HAZARD_COLUMNS: int = 3
+const HAZARD_LINEUP_ORIGIN := Vector3(0.0, 0.0, -80.0)
+const HAZARD_OVERVIEW_ORTHOGRAPHIC_SIZE: float = 78.0
+const HAZARD_COLUMN_ORTHOGRAPHIC_SIZE: float = 32.0
+const HAZARD_LABEL_FONT_SIZE: int = 72
+const HAZARD_LABEL_OUTLINE_SIZE: int = 8
+const UI_CONTEXT_ORIGIN := Vector3(0.0, 0.0, 72.0)
 const DEFAULT_ARTIFACT_DIR: String = "res://../qa-artifacts/visual-qa"
 
 const HAZARD_PATHS: Array[String] = [
@@ -35,9 +42,32 @@ func get_capture_camera() -> Camera3D:
 func get_capture_presets() -> Array[Dictionary]:
 	return [
 		{"name": "zones", "position": Vector3(0, 70, -6), "rotation": Vector3(-90, 0, 0), "orthographic_size": 96.0},
-		{"name": "hazards", "position": Vector3(0, 42, -86), "rotation": Vector3(-90, 0, 0), "orthographic_size": 44.0},
-		{"name": "ui_hud", "position": Vector3(0, 12, 18), "rotation": Vector3(-45, 0, 0), "ui_target": "hud"},
-		{"name": "ui_phone", "position": Vector3(0, 12, 18), "rotation": Vector3(-45, 0, 0), "ui_target": "phone"},
+		{
+			"name": "hazards",
+			"position": HAZARD_LINEUP_ORIGIN + Vector3(0.0, 42.0, -HAZARD_GRID_SPACING),
+			"rotation": Vector3(-90, 0, 0),
+			"orthographic_size": HAZARD_OVERVIEW_ORTHOGRAPHIC_SIZE,
+		},
+		{
+			"name": "hazards_column_1",
+			"position": HAZARD_LINEUP_ORIGIN + Vector3(-HAZARD_GRID_SPACING, 24.0, -HAZARD_GRID_SPACING),
+			"rotation": Vector3(-90, 0, 0),
+			"orthographic_size": HAZARD_COLUMN_ORTHOGRAPHIC_SIZE,
+		},
+		{
+			"name": "hazards_column_2",
+			"position": HAZARD_LINEUP_ORIGIN + Vector3(0.0, 24.0, -HAZARD_GRID_SPACING),
+			"rotation": Vector3(-90, 0, 0),
+			"orthographic_size": HAZARD_COLUMN_ORTHOGRAPHIC_SIZE,
+		},
+		{
+			"name": "hazards_column_3",
+			"position": HAZARD_LINEUP_ORIGIN + Vector3(HAZARD_GRID_SPACING, 24.0, -HAZARD_GRID_SPACING),
+			"rotation": Vector3(-90, 0, 0),
+			"orthographic_size": HAZARD_COLUMN_ORTHOGRAPHIC_SIZE,
+		},
+		{"name": "ui_hud", "position": Vector3(0, 16, 82), "rotation": Vector3(-55, 0, 0), "ui_target": "hud"},
+		{"name": "ui_phone", "position": Vector3(0, 16, 82), "rotation": Vector3(-55, 0, 0), "ui_target": "phone"},
 	]
 
 func _build_zone_boards() -> void:
@@ -84,7 +114,7 @@ func _add_props(parent: Node3D, zone: Resource) -> void:
 func _build_hazard_lineup() -> void:
 	var root := Node3D.new()
 	root.name = "HazardLineup"
-	root.position = Vector3(0.0, 0.0, -80.0)
+	root.position = HAZARD_LINEUP_ORIGIN
 	_boards.add_child(root)
 	for i in range(HAZARD_PATHS.size()):
 		var scene := load(HAZARD_PATHS[i]) as PackedScene
@@ -94,14 +124,15 @@ func _build_hazard_lineup() -> void:
 		var hazard := scene.instantiate() as Node3D
 		if hazard == null:
 			continue
-		var column := i % 3
-		var row := i / 3
+		var column: int = i % HAZARD_COLUMNS
+		var row: int = i / HAZARD_COLUMNS
 		hazard.position = Vector3((float(column) - 1.0) * HAZARD_GRID_SPACING, 0.0, -float(row) * HAZARD_GRID_SPACING)
 		_prepare_static_preview(hazard)
 		root.add_child(hazard)
 		_add_label(root, HAZARD_PATHS[i].get_file().get_basename(), hazard.position + Vector3(0.0, 0.05, 1.6))
 
 func _build_ui_samples() -> void:
+	_build_ui_context()
 	var hud_scene := load("res://scenes/game/hud.tscn") as PackedScene
 	var phone_scene := load("res://scenes/game/phone_overlay.tscn") as PackedScene
 	if hud_scene == null or phone_scene == null:
@@ -146,11 +177,21 @@ func _configure_phone_sample(phone: Node) -> void:
 	if text != null:
 		text.text = "Controlled phone overlay sample for readability checks."
 
+func _build_ui_context() -> void:
+	if GameState.ZONES.size() <= GameState.ZoneIndex.SUBURB:
+		return
+	var root := Node3D.new()
+	root.name = "UIRoadContext"
+	root.position = UI_CONTEXT_ORIGIN
+	_boards.add_child(root)
+	_add_road_tiles(root, GameState.ZONES[GameState.ZoneIndex.SUBURB])
+
 func _add_label(parent: Node3D, text: String, position: Vector3) -> void:
 	var label := Label3D.new()
 	label.text = text
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.font_size = 32
+	label.font_size = HAZARD_LABEL_FONT_SIZE
+	label.outline_size = HAZARD_LABEL_OUTLINE_SIZE
 	label.position = position
 	parent.add_child(label)
 

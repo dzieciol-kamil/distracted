@@ -15,7 +15,15 @@ PROJECT_DIR = "src"
 ARTIFACT_DIR = "qa-artifacts"
 
 MODES = ("validate", "visual", "smoke")
-VISUAL_ARTIFACTS = ("zones.png", "hazards.png", "ui_hud.png", "ui_phone.png")
+VISUAL_ARTIFACTS = (
+    "zones.png",
+    "hazards.png",
+    "hazards_column_1.png",
+    "hazards_column_2.png",
+    "hazards_column_3.png",
+    "ui_hud.png",
+    "ui_phone.png",
+)
 SMOKE_ARTIFACTS = ("01_game_loaded.png", "02_after_short_walk.png", "03_phone_overlay.png")
 
 
